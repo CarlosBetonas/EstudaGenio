@@ -17,7 +17,6 @@
         .selectable-card { transition: all 0.2s ease-in-out; }
         .selectable-card.selected { border-color: #37A5E0; box-shadow: 0 0 0 2px #37A5E0; }
         .progress-bar-fill { transition: width 0.4s ease-in-out; }
-        /* Loader para feedback visual */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #37A5E0; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -25,9 +24,8 @@
 <body class="bg-slate-50 text-slate-800 flex items-start justify-center min-h-screen p-4 pt-16 md:pt-24">
 
     <main class="w-full max-w-md lg:max-w-lg mx-auto relative">
-        <!-- Container para as telas de login/registro -->
         <div class="relative">
-            <!-- Fase 1: Cadastro Rápido -->
+            <!-- Tela: Cadastro Rápido -->
             <div id="registration-phase" class="form-container form-visible">
                 <div class="bg-white p-8 md:p-12 rounded-2xl shadow-lg">
                     <div class="flex justify-center items-center mb-6 h-12">
@@ -137,13 +135,12 @@
                 </div>
             </div>
 
-            <!-- NOVO: Link Minimalista Acessar Site -->
                     <div class="-mt-11 text-center relative z-10">
                     <a href="/" class="text-xs text-slate-400 hover:text-slate-600 transition-colors duration-200">Acessar site</a>
                 </div>
             </div>
             
-            <!-- Tela de Esqueci a Senha (Atualizada) -->
+            <!-- Tela de Esqueci a Senha -->
             <div id="forgot-password-phase" class="form-container form-hidden">
                 <div class="bg-white p-8 md:p-12 rounded-2xl shadow-lg">
                     <div id="forgot-password-form-container">
@@ -194,7 +191,6 @@
             </div>
         </div>
 
-        <!-- Fase 2: Onboarding de Personalização (fora do container relativo para transição) -->
         <div id="onboarding-phase" class="form-container form-hidden w-full absolute top-0">
              <div class="bg-white p-8 md:p-12 rounded-2xl shadow-lg">
                 <!-- Progress Bar -->
@@ -207,7 +203,6 @@
                     </div>
                 </div>
                 
-                <!-- Step 1: Foco Principal (ADICIONEI O ID exams-container) -->
                 <div id="step-1" class="step-transition">
                     <div class="text-center">
                         <h2 id="welcome-message" class="text-2xl md:text-3xl font-bold">Olá! Para quais provas você está estudando?</h2>
@@ -224,7 +219,6 @@
                     <button id="next-step-1" class="mt-8 w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-[#37A5E0] hover:bg-[#2d8cc2]">Avançar</button>
                 </div>
                 
-                <!-- Step 2: Áreas de Estudo (ADICIONEI O ID subjects-container) -->
                 <div id="step-2" class="step-transition" style="display: none;">
                     <div class="text-center">
                         <h2 class="text-2xl md:text-3xl font-bold">Quais são suas áreas de maior interesse ou dificuldade?</h2>
@@ -261,7 +255,6 @@
                      <button id="next-step-2" class="mt-8 w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-[#37A5E0] hover:bg-[#2d8cc2]">Avançar</button>
                 </div>
 
-                <!-- Step 3: Objetivo e Nível -->
                 <div id="step-3" class="step-transition" style="display: none;">
                     <div class="text-center">
                         <h2 class="text-2xl md:text-3xl font-bold">Qual é o seu objetivo principal neste momento?</h2>
@@ -313,37 +306,31 @@
         let currentUserId = null;
         let userData = { exams: [], subjects: [], goal: '' };
 
-        // Auto-login apenas se existir usuário salvo de forma persistente (Lembrar-me)
         const rememberedUserId = localStorage.getItem('userId');
         if (rememberedUserId) {
             window.location.href = 'dashboard.html';
         }
 
 
-        // Função auxiliar para salvar usuário no navegador
         const saveUserSession = (id, name, email, remember) => {
             const sessionData = { userId: id, fullName: name, email };
 
             if (remember) {
-                // Sessão persistente (Lembrar-me marcado)
                 localStorage.setItem('estudaGenioUser', JSON.stringify(sessionData));
                 localStorage.setItem('userId', id);
                 localStorage.setItem('userName', name);
                 localStorage.setItem('userEmail', email);
 
-                // Limpa sessão temporária
                 sessionStorage.removeItem('estudaGenioUser');
                 sessionStorage.removeItem('userId');
                 sessionStorage.removeItem('userName');
                 sessionStorage.removeItem('userEmail');
             } else {
-                // Sessão só até fechar o navegador
                 sessionStorage.setItem('estudaGenioUser', JSON.stringify(sessionData));
                 sessionStorage.setItem('userId', id);
                 sessionStorage.setItem('userName', name);
                 sessionStorage.setItem('userEmail', email);
 
-                // Não deixa nada persistente se não marcou "Lembrar-me"
                 localStorage.removeItem('estudaGenioUser');
                 localStorage.removeItem('userId');
                 localStorage.removeItem('userName');
@@ -355,13 +342,11 @@
 
 
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Elementos das Fases ---
             const registrationPhase = document.getElementById('registration-phase');
             const loginPhase = document.getElementById('login-phase');
             const forgotPasswordPhase = document.getElementById('forgot-password-phase');
             const onboardingPhase = document.getElementById('onboarding-phase');
             
-            // --- Formulários ---
             const registrationForm = document.getElementById('registration-form');
             const loginForm = document.getElementById('login-form');
             const forgotPasswordForm = document.getElementById('forgot-password-form');
@@ -369,7 +354,6 @@
             const forgotPasswordSuccess = document.getElementById('forgot-password-success');
             const resetError = document.getElementById('reset-error');
             
-            // --- Elementos do Onboarding ---
             const welcomeMessage = document.getElementById('welcome-message');
             const finalWelcome = document.getElementById('final-welcome');
             const steps = [document.getElementById('step-1'), document.getElementById('step-2'), document.getElementById('step-3')];
@@ -380,7 +364,6 @@
             const progressBar = document.getElementById('progress-bar');
             const progressText = document.getElementById('progress-text');
 
-            // --- FUNÇÕES DE TRANSIÇÃO VISUAL ---
             const switchAuthView = (showView) => {
                 const views = [registrationPhase, loginPhase, forgotPasswordPhase];
                 views.forEach(view => {
@@ -401,7 +384,6 @@
                     finalWelcome.textContent = `Tudo pronto, ${firstName}!`;
                 }
                 
-                // Animação de saída
                 currentPhaseContainer.style.transition = 'opacity 0.5s ease-out';
                 currentPhaseContainer.style.opacity = '0';
                 
@@ -418,7 +400,6 @@
                 }, 500);
             };
 
-            // --- NAVEGAÇÃO ENTRE TELAS ---
             document.getElementById('show-login-link').addEventListener('click', (e) => { e.preventDefault(); switchAuthView(loginPhase); });
             document.getElementById('show-register-link').addEventListener('click', (e) => { e.preventDefault(); switchAuthView(registrationPhase); });
             document.getElementById('show-forgot-password-link').addEventListener('click', (e) => { e.preventDefault(); switchAuthView(forgotPasswordPhase); });
@@ -431,11 +412,9 @@
                 forgotPasswordForm.reset();
             });
 
-            // --- LÓGICA DE REGISTRO (CONECTADO AO MONGODB) ---
             registrationForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
-                // Validação de senha
                 const passwordInput = document.getElementById('password');
                 const password = passwordInput.value;
                 const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -473,7 +452,6 @@
                         currentUserId = result.userId;
                         const email = document.getElementById('email').value;
 
-                        // Ao criar conta, já considero como "lembrar" por padrão
                         saveUserSession(result.userId, result.fullName, email, true);
 
                         goToOnboarding(registrationPhase.parentElement, result.fullName);
@@ -488,14 +466,12 @@
                     }
                 });
 
-            // --- LÓGICA DE LOGIN (CONECTADO AO MONGODB) ---
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const btn = document.getElementById('btn-login');
                 const originalText = btn.innerText;
                 btn.innerHTML = '<span class="loader"></span> Entrando...';
 
-                // Lê e-mail e o estado do "Lembrar-me"
                 const emailInput = document.getElementById('loginEmail').value;
                 const rememberMe = document.getElementById('remember-me').checked;
                 
@@ -532,11 +508,9 @@
 
 
 
-            // --- LÓGICA DE REDEFINIÇÃO DE SENHA (COM COOLDOWN E VALIDAÇÃO) ---
             forgotPasswordForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
-                // 1. Verifica Cooldown (1 minuto)
                 const lastResetTime = localStorage.getItem('lastPasswordResetTime');
                 if (lastResetTime) {
                     const timePassed = Date.now() - parseInt(lastResetTime);
@@ -548,7 +522,6 @@
                     }
                 }
 
-                // 2. Validações de Senha
                 const email = document.getElementById('forgotEmail').value;
                 const newPass = document.getElementById('newPassword').value;
                 const confirmPass = document.getElementById('confirmNewPassword').value;
@@ -569,13 +542,11 @@
 
                 resetError.style.display = 'none';
 
-                // 3. Envio para API
                 const btn = forgotPasswordForm.querySelector('button');
                 const originalText = btn.innerText;
                 btn.innerHTML = '<span class="loader"></span> Redefinindo...';
 
                 try {
-                    // Nota: Você precisará criar essa rota POST /reset-password no seu server.js
                     const response = await fetch(`${API_URL}/reset-password`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -585,14 +556,11 @@
                     const result = await response.json();
 
                     if (response.ok) {
-                        // Salva timestamp do sucesso para o cooldown
                         localStorage.setItem('lastPasswordResetTime', Date.now());
 
-                        // Exibe sucesso
                         forgotPasswordFormContainer.style.display = 'none';
                         forgotPasswordSuccess.style.display = 'block';
                         
-                        // Redireciona para login após 3 segundos
                         setTimeout(() => {
                              forgotPasswordSuccess.style.display = 'none';
                              forgotPasswordFormContainer.style.display = 'block';
@@ -613,9 +581,7 @@
             });
 
 
-            // --- ONBOARDING INTERATIVO ---
             
-            // Lógica de seleção de cards
             const selectableCards = document.querySelectorAll('.selectable-card');
             selectableCards.forEach(card => {
                 card.addEventListener('click', (e) => {
@@ -624,16 +590,12 @@
                     const radio = card.querySelector('input[type="radio"]');
                     if (radio) {
                         radio.checked = true;
-                        // Trigger change event manually if needed, or rely on change listener
                         const event = new Event('change');
                         radio.dispatchEvent(event);
                     } else {
                         card.classList.toggle('selected');
                         
-                        // Atualiza userData
                         const val = card.getAttribute('data-value');
-                        // Procura o ID do pai para saber se é exam ou subject
-                        // Como a estrutura é aninhada, usamos closest
                         const container = card.closest('#exams-container, #subjects-container');
                         
                         if (container && container.id === 'exams-container') {
@@ -647,21 +609,17 @@
                 });
             });
 
-            // Listener para Radio Buttons (Objetivo)
             document.querySelectorAll('input[name="goal"]').forEach(radio => {
                 radio.addEventListener('change', (e) => {
                     userData.goal = e.target.value;
-                    // Limpa seleção visual de outros
                     document.querySelectorAll('input[name="goal"]').forEach(r => {
                          r.closest('.selectable-card').classList.remove('selected', 'border-[#37A5E0]');
                          r.closest('.selectable-card').classList.remove('shadow-lg'); // Remove sombra extra se tiver
                     });
-                    // Adiciona visual ao selecionado
                     e.target.closest('.selectable-card').classList.add('selected', 'border-[#37A5E0]');
                 });
             });
 
-            // Navegação Steps
             const goToStep = (stepIndex) => {
                 steps.forEach((step, index) => {
                     step.style.display = (index === stepIndex) ? 'block' : 'none';
@@ -675,7 +633,6 @@
             nextButton1.addEventListener('click', () => goToStep(1));
             nextButton2.addEventListener('click', () => goToStep(2));
 
-            // --- FINALIZAR E SALVAR ---
             finishButton.addEventListener('click', async () => {
                 const originalText = finishButton.innerText;
                 finishButton.innerHTML = '<span class="loader"></span> Salvando...';
@@ -690,7 +647,6 @@
                     if (response.ok) {
                         steps.forEach(step => step.style.display = 'none');
                         finalMessage.style.display = 'block';
-                        // Esconde barra de progresso
                         if(progressBar.parentElement.parentElement) progressBar.parentElement.parentElement.style.display = 'none';
                     } else {
                         alert('Erro ao salvar preferências.');
@@ -703,7 +659,6 @@
                 }
             });
 
-            // Botão final "Ir para Painel"
             const goToDashboardBtn = document.getElementById('go-to-dashboard');
             if (goToDashboardBtn) {
                 goToDashboardBtn.addEventListener('click', () => {

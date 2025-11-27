@@ -58,9 +58,7 @@
 </head>
 <body class="text-slate-800">
 
-    <!-- Main App (Login Screen Removed) -->
     <div id="app-container" class="flex h-screen bg-slate-100">
-        <!-- Sidebar -->
         <aside id="sidebar" class="sidebar fixed inset-y-0 left-0 bg-white w-64 z-40 shadow-lg lg:translate-x-0 lg:static lg:inset-0 flex flex-col">
             <div>
                 <div class="flex items-center justify-center py-6">
@@ -115,7 +113,6 @@
             </div>
         </aside>
 
-        <!-- Main content -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <header class="flex justify-between items-center p-4 bg-white border-b lg:hidden">
                 <button id="menu-button" class="text-slate-500 focus:outline-none">
@@ -171,7 +168,6 @@
                     </div>
                 </div>
 
-                <!-- View de Busca de Questões -->
                 <div id="search-view" class="view-container view-hidden container mx-auto">
                     <h1 class="text-3xl font-bold text-slate-800">Explore as Questões</h1>
                     <p class="text-slate-600 mt-1">Filtre e encontre exatamente o que precisa para seus estudos.</p>
@@ -197,7 +193,6 @@
                     <div id="search-results-container" class="mt-6 space-y-4"></div>
                 </div>
                 
-                <!-- View de Simulados -->
                 <div id="simulados-view" class="view-container view-hidden container mx-auto">
                     <h1 class="text-3xl font-bold text-slate-800">Central de Simulados</h1>
                     <p class="text-slate-600 mt-1">Pratique com nossos simulados prontos ou crie o seu.</p>
@@ -205,7 +200,6 @@
                     <div class="mt-8">
                         <h2 class="text-2xl font-semibold">Simulados Prontos</h2>
                         <div id="premade-simulados-container" class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <!-- Cards de simulados prontos serão inseridos aqui -->
                         </div>
                     </div>
 
@@ -226,7 +220,6 @@
                     </div>
                 </div>
 
-                <!-- View do Simulado Ativo -->
                 <div id="simulado-active-view" class="view-container view-hidden container mx-auto">
                     <div class="bg-white p-6 rounded-2xl shadow-md">
                         <div class="flex justify-between items-center border-b pb-4">
@@ -247,7 +240,6 @@
                     </div>
                 </div>
 
-                <!-- View de Resultados do Simulado -->
                 <div id="simulado-results-view" class="view-container view-hidden container mx-auto text-center">
                     <div class="bg-white p-8 rounded-2xl shadow-md max-w-2xl mx-auto">
                         <i data-lucide="check-circle-2" class="mx-auto h-16 w-16 text-green-500"></i>
@@ -266,12 +258,10 @@
                     </div>
                 </div>
 
-                <!-- View de Meu Desempenho -->
                  <div id="performance-view" class="view-container view-hidden container mx-auto">
                     <h1 class="text-3xl font-bold text-slate-800">Meu Desempenho</h1>
                     <p class="text-slate-600 mt-1">Analise sua evolução, identifique pontos fortes e fracos.</p>
 
-                    <!-- Estatísticas Gerais -->
                     <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div class="bg-white p-5 rounded-xl shadow-md text-center">
                             <p class="text-sm text-slate-500">Questões Resolvidas</p>
@@ -291,7 +281,6 @@
                         </div>
                     </div>
 
-                    <!-- Seção Principal de Análise -->
                     <div class="mt-8 grid grid-cols-1 lg:grid-cols-5 gap-8">
                         <div class="lg:col-span-3 bg-white p-6 rounded-2xl shadow-md">
                             <h2 class="text-xl font-bold">Desempenho por Matéria</h2>
@@ -310,16 +299,13 @@
                         </div>
                     </div>
 
-                    <!-- Seção de Histórico -->
                     <div class="mt-8">
                         <h2 class="text-2xl font-semibold">Histórico de Simulados</h2>
                         <div id="simulado-history-container" class="mt-4 space-y-3">
-                            <!-- Histórico será inserido aqui pelo JS -->
                         </div>
                     </div>
                 </div>
 
-                 <!-- View do Fórum -->
                  <div id="forum-view" class="view-container view-hidden container mx-auto">
                     <h1 class="text-3xl font-bold text-slate-800">Fórum de Discussões</h1>
                     <p class="text-slate-600 mt-1">Tire suas dúvidas, compartilhe conhecimento e interaja com outros estudantes.</p>
@@ -336,15 +322,12 @@
                     </div>
                     
                     <div id="forum-topics-container" class="mt-6 bg-white rounded-xl shadow-md">
-                        <!-- Tópicos do fórum serão inseridos aqui -->
                     </div>
 
-                    <!-- Paginação -->
                     <div id="forum-pagination-container" class="mt-6 flex justify-center items-center space-x-2">
                     </div>
                 </div>
                 
-                <!-- View de Detalhes do Tópico do Fórum -->
                 <div id="forum-topic-view" class="view-container view-hidden container mx-auto">
                     <button id="back-to-forum-btn" class="flex items-center text-sm text-[#37A5E0] font-semibold hover:underline mb-4">
                         <i data-lucide="arrow-left" class="mr-2 h-4 w-4"></i>
@@ -367,15 +350,12 @@
                     </div>
                 </div>
                 
-                <!-- View do Chatbot -->
                 <div id="chatbot-view" class="view-container view-hidden container mx-auto">
                     <h1 class="text-3xl font-bold text-slate-800">Chatbot EstudaGênio</h1>
                     <p class="text-slate-600 mt-1">Converse com nossa IA para tirar dúvidas sobre qualquer matéria!</p>
                     
                     <div class="mt-8 bg-white rounded-2xl shadow-md h-[70vh] flex flex-col">
-                        <!-- Chat messages area -->
                         <div id="chat-messages" class="flex-1 p-6 space-y-4 overflow-y-auto">
-                            <!-- Bot initial message -->
                             <div class="flex items-start gap-3">
                                 <div class="flex-shrink-0 h-10 w-10 rounded-full bg-[#37A5E0] flex items-center justify-center text-white">
                                     <i data-lucide="bot"></i>
@@ -389,7 +369,6 @@
                             </div>
                         </div>
                         
-                        <!-- Chat input area -->
                         <div class="p-4 bg-slate-50 border-t">
                             <form id="chatbot-form" class="flex items-center gap-4">
                                 <input type="text" id="chatbot-input" placeholder="Digite sua dúvida aqui..." class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#37A5E0]" autocomplete="off">
@@ -406,7 +385,6 @@
         </div>
     </div>
     
-    <!-- Modal para Detalhes da Questão e IA -->
     <div id="question-modal" class="modal-backdrop hidden opacity-0 fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="modal-content opacity-0 scale-95 bg-white w-full max-w-2xl rounded-2xl shadow-xl p-6 relative flex flex-col max-h-[90vh]">
             <button id="close-modal-button" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 z-10">
@@ -428,7 +406,6 @@
         </div>
     </div>
     
-    <!-- Modal para Criar Novo Tópico -->
     <div id="new-topic-modal" class="modal-backdrop hidden opacity-0 fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="modal-content opacity-0 scale-95 bg-white w-full max-w-2xl rounded-2xl shadow-xl p-6 relative flex flex-col">
              <button id="close-new-topic-modal" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 z-10">
@@ -452,21 +429,18 @@
         </div>
     </div>
     
-    <!-- Modal para Assinatura Premium -->
     <div id="premium-modal" class="modal-backdrop hidden opacity-0 fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
         <div class="modal-content opacity-0 scale-95 bg-white w-full max-w-4xl rounded-2xl shadow-xl relative overflow-hidden">
             <button id="close-premium-modal" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 z-10">
                 <i data-lucide="x"></i>
             </button>
             
-            <!-- Step 1: Plan Comparison -->
             <div id="plan-comparison-step">
                  <div class="p-8 text-center">
                     <h2 class="text-3xl font-bold text-slate-800">Desbloqueie seu Potencial Máximo</h2>
                     <p class="text-slate-600 mt-2 max-w-2xl mx-auto">Compare os planos e escolha a melhor opção para acelerar sua aprovação com o EstudaGênio.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-slate-200">
-                    <!-- Free Plan -->
                     <div class="bg-white p-8">
                         <h3 class="text-2xl font-bold">Gratuito</h3>
                         <p class="text-slate-500">O essencial para começar.</p>
@@ -480,7 +454,6 @@
                         </ul>
                         <button disabled class="mt-6 w-full bg-slate-200 text-slate-500 font-semibold py-3 rounded-lg cursor-not-allowed">Seu Plano Atual</button>
                     </div>
-                    <!-- Premium Plan -->
                     <div class="bg-slate-50 p-8">
                         <h3 class="text-2xl font-bold text-[#37A5E0]">Premium</h3>
                         <p class="text-slate-500">Acesso total para sua aprovação.</p>
@@ -497,7 +470,6 @@
                 </div>
             </div>
 
-            <!-- Step 2: Payment -->
             <div id="payment-step" class="hidden">
                  <div class="p-8 text-center">
                     <button id="back-to-plans-btn" class="absolute top-4 left-4 flex items-center text-sm font-semibold text-slate-600 hover:text-slate-800"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Voltar</button>
@@ -524,7 +496,6 @@
                 </div>
             </div>
 
-            <!-- Step 3: Payment Success -->
             <div id="payment-success-step" class="hidden p-12 text-center">
                 <i data-lucide="check-circle-2" class="mx-auto h-20 w-20 text-green-500"></i>
                 <h2 class="text-3xl font-bold text-slate-800 mt-6">Pagamento Aprovado!</h2>
@@ -536,7 +507,6 @@
 
 
     <script>
-        // CONFIGURAÇÕES DO SERVIDOR LOCAL (Seu server.js)
         const SERVER_URL = "https://estudagenio-backend-production.up.railway.app";
 
         function verifyAuth() {
@@ -553,12 +523,10 @@
         let isPremiumUser = false;
         let currentUser = null;
 
-        // CHATBOT CONFIG - agora passando pelo servidor Node
         const CHATBOT_API_URL = `${SERVER_URL}/api/chat`;
 
 
         
-        // MOCK DATA (Mantido como backup caso o servidor não tenha essas rotas ainda)
         const mockQuestions = [
             { id: 1, exam: 'ENEM', subject: 'Matemática', difficulty: 'Média', theme: 'Probabilidade', statement: 'Em um sorteio com 10 bolas numeradas de 1 a 10, qual a probabilidade de sortear um número par?', options: ['A) 10%', 'B) 20%', 'C) 40%', 'D) 50%'], answer: 'D) 50%' },
             { id: 2, exam: 'FUVEST', subject: 'Física', difficulty: 'Difícil', theme: 'Cinemática', statement: 'Um projétil é lançado com um ângulo de 45° e velocidade inicial de 100 m/s. Desprezando a resistência do ar, qual o alcance máximo do projétil? (g = 10 m/s²)', options: ['A) 500m', 'B) 1000m', 'C) 1500m', 'D) 2000m'], answer: 'B) 1000m' },
@@ -574,7 +542,7 @@
             { id: 12, exam: 'VUNESP', subject: 'Física', difficulty: 'Média', theme: 'Cinemática', statement: 'Um objeto em queda livre (sem resistência do ar) leva 3 segundos para atingir o solo. De qual altura ele caiu? (g = 10 m/s²)', options: ['A) 15m', 'B) 30m', 'C) 45m', 'D) 90m'], answer: 'C) 45m' },
         ];
 
-        let allQuestions = []; // Questões vindas do MongoDB
+        let allQuestions = []; 
 
         const mockPremadeSimulados = [
             { id: 'enem-rapido', title: 'Simulado Rápido ENEM', description: '10 questões de múltipla escolha sobre os temas mais comuns do ENEM.', settings: { quantity: 10, exam: 'ENEM' } },
@@ -605,7 +573,6 @@
             topicsPerPage: 5
         };
 
-        // --- INICIALIZAÇÃO ---
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             verifyAuth();
@@ -615,12 +582,11 @@
             setupInteractions();
             setupChart('performanceChart', false);
             updatePremiumUI();
-            loadQuestionsFromBackend(); // NOVO: carrega questões do Mongo
-            loadForumTopicsFromBackend(); // NOVO: carrega tópicos do fórum do MongoDB
+            loadQuestionsFromBackend(); 
+            loadForumTopicsFromBackend(); 
         });
 
         function identifyUser() {
-            // Primeiro tenta localStorage (Lembrar-me marcado), depois sessionStorage (sessão normal)
             const storedId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
             const storedName = localStorage.getItem('userName') || sessionStorage.getItem('userName');
             const storedEmail = localStorage.getItem('userEmail') || sessionStorage.getItem('userEmail');
@@ -648,26 +614,21 @@
             fetchUserProfileFromBackend();
         }
 
-        // --- INTEGRAÇÃO COM MONGODB (Funções de Fetch) ---
 
-        // Função para buscar histórico (precisa de rota GET /api/history no server.js)
         async function fetchHistoryFromBackend() {
             if (!currentUser) return;
             try {
-                // Tenta conectar ao backend
                 const response = await fetch(`${SERVER_URL}/api/history?userId=${currentUser.id}`);
                 if (response.ok) {
                     const data = await response.json();
-                    mockSimuladoHistory = data; // Atualiza com dados reais se existirem
-                    displaySimuladoHistory(); // Atualiza UI
+                    mockSimuladoHistory = data; 
+                    displaySimuladoHistory(); 
                 }
             } catch (error) {
                 console.log("Servidor backend offline ou rota não existe. Usando dados locais.");
-                // Falha silenciosa: mantém os dados mockados se o servidor não responder
             }
         }
 
-        // Buscar dados do usuário (incluindo se é Premium) no backend
         async function fetchUserProfileFromBackend() {
             if (!currentUser || !currentUser.id || currentUser.id.startsWith('guest_')) return;
 
@@ -678,8 +639,6 @@
                 const data = await response.json();
                 const prefs = data.preferences || {};
 
-                // Aqui você decide como marcar Premium no banco.
-                // Exemplo: colocar em user.preferences.isPremium = true
                 if (typeof prefs.isPremium === 'boolean') {
                     isPremiumUser = prefs.isPremium;
                     updatePremiumUI();
@@ -690,7 +649,6 @@
         }
 
 
-        // Carregar tópicos reais do fórum (GET /api/forum)
         async function loadForumTopicsFromBackend() {
             try {
                 const res = await fetch(`${SERVER_URL}/api/forum`);
@@ -734,12 +692,11 @@
             } catch (err) {
                 console.error('Erro ao carregar fórum do backend, usando mock local.', err);
                 forumTopics = [];
-                displayForumTopics(); // cai no mock
+                displayForumTopics();
             }
         }
 
 
-        // Buscar questões reais no backend (GET /api/questions)
         async function loadQuestionsFromBackend() {
             try {
                 const response = await fetch(`${SERVER_URL}/api/questions`);
@@ -751,7 +708,6 @@
 
                 const data = await response.json();
 
-                // Garante que cada questão tenha um id utilizável
                 allQuestions = data.map((q, index) => ({
                     ...q,
                     id: q.id || q._id || (index + 1)
@@ -765,15 +721,14 @@
         }
 
 
-        // Função para salvar resultado do simulado (precisa de rota POST /api/history no server.js)
         async function saveSimuladoResultToBackend(data) {
-            if (!currentUser) return; // Não salva se não estiver logado
+            if (!currentUser) return; 
 
             try {
                 const res = await fetch(`${SERVER_URL}/api/history`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data) // Envia TUDO o que calculamos acima
+                    body: JSON.stringify(data) 
                 });
 
                 if (!res.ok) throw new Error('Erro ao salvar histórico');
@@ -802,7 +757,6 @@
             const premiumModal = document.getElementById('premium-modal');
 
             window.showView = (viewId) => {
-                // Verifica se é Premium (Mantenha se quiser bloquear, ou remova 'performance' da lista para testar)
                 const premiumFeatures = ['performance', 'forum'];
                 if (premiumFeatures.includes(viewId) && !isPremiumUser) {
                     openModal(premiumModal);
@@ -837,7 +791,6 @@
                     }
                 });
 
-                // --- LÓGICA DE CARREGAMENTO DAS VIEWS ---
                 if (viewId === 'search') {
                     const source = (typeof allQuestions !== 'undefined' && allQuestions.length) ? allQuestions : mockQuestions;
                     displaySearchResults(source);
@@ -845,11 +798,9 @@
                 
                 if (viewId === 'simulados') displayPremadeSimulados();
                 
-                // --- AQUI ESTÁ A MUDANÇA DO PASSO 3 ---
                 if (viewId === 'performance') {
-                    loadPerformanceData(); // <--- Chama a função que busca do MongoDB
+                    loadPerformanceData(); 
                 }
-                // --------------------------------------
 
                 if (viewId === 'forum') displayForumTopics();
             };
@@ -862,7 +813,6 @@
                 });
             });
 
-            // Inicialização das views (esconde as que não são a inicial)
             const initialView = document.getElementById('dashboard-view');
             document.querySelectorAll('.view-container').forEach(v => {
                 if(v !== initialView) {
@@ -888,9 +838,7 @@
             document.getElementById('results-performance-btn').addEventListener('click', () => showView('performance'));
             document.getElementById('practice-suggested-btn').addEventListener('click', practiceSuggestedQuestions);
             
-            // Logout simples (limpa local storage)
             document.getElementById('logout-btn').addEventListener('click', () => {
-                // Limpa tudo de sessão
                 localStorage.removeItem('estudaGenioUser');
                 localStorage.removeItem('userId');
                 localStorage.removeItem('userName');
@@ -906,7 +854,6 @@
             });
 
 
-            // Premium Modal
             const premiumModal = document.getElementById('premium-modal');
             document.getElementById('upgrade-premium-btn').addEventListener('click', () => openModal(premiumModal));
             document.getElementById('close-premium-modal').addEventListener('click', () => closeModal(premiumModal));
@@ -923,7 +870,6 @@
             document.getElementById('start-studying-btn').addEventListener('click', () => closeModal(premiumModal));
 
 
-            // Forum Modals
             const newTopicModal = document.getElementById('new-topic-modal');
             document.getElementById('create-topic-btn').addEventListener('click', () => openModal(newTopicModal));
             document.getElementById('close-new-topic-modal').addEventListener('click', () => closeModal(newTopicModal));
@@ -945,10 +891,8 @@
                 });
             });
             
-            // Chatbot
             document.getElementById('chatbot-form').addEventListener('submit', handleChatSubmit);
 
-            // Question Modal
             const questionModal = document.getElementById('question-modal');
             document.getElementById('close-modal-button').addEventListener('click', () => closeModal(questionModal));
             questionModal.addEventListener('click', (e) => { if (e.target === questionModal) closeModal(questionModal); });
@@ -961,7 +905,6 @@
             document.getElementById('payment-step').style.display = 'none';
             document.getElementById('payment-success-step').style.display = 'block';
             
-            // Exemplo de atualização de preferência no MongoDB
             if(currentUser) {
                 fetch(`${SERVER_URL}/update-preferences`, {
                     method: 'POST',
@@ -1014,7 +957,6 @@
             const exam = document.getElementById('filter-exam').value;
             const difficulty = document.getElementById('filter-difficulty').value;
 
-            // Se o servidor já tiver retornado algo, usa ele; senão usa o mock
             const source = allQuestions.length ? allQuestions : mockQuestions;
 
             const filteredQuestions = source.filter(q => {
@@ -1139,32 +1081,27 @@
             });
         }
 
-        let performanceChartInstance = null; // Variável global para guardar o gráfico
+        let performanceChartInstance = null; 
 
         async function loadPerformanceData() {
             if (!currentUser) return;
 
             try {
-                // 1. Busca os dados mastigados do Backend
                 const response = await fetch(`${SERVER_URL}/api/analytics/${currentUser.id}`);
                 const data = await response.json();
 
                 if (data.empty) {
-                    // Se não tiver dados, mantém zerado ou mostra mensagem
                     return;
                 }
 
-                // 2. Preenche os Cards (Números)
                 document.getElementById('perf-total-questions').textContent = data.cards.questionsResolved;
                 document.getElementById('perf-general-accuracy').textContent = `${data.cards.generalAccuracy}%`;
                 document.getElementById('perf-simulados-count').textContent = data.cards.simuladosCompleted;
                 document.getElementById('perf-avg-time').textContent = data.cards.avgTime;
 
-                // 3. Preenche a Análise da IA (Texto Dinâmico)
                 const { bestSubject, worstSubject, generalAccuracy } = data.analysisContext;
                 const aiContainer = document.getElementById('perf-ai-content');
                 
-                // Lógica simples de texto baseada nos dados (sem gastar API do Gemini a cada clique)
                 let aiText = `
                     <p><strong>Pontos Fortes:</strong> Você está indo muito bem em <strong>${bestSubject || 'Geral'}</strong>! Continue assim.</p>
                     <p><strong>Área de Melhoria:</strong> Notei que precisamos dar uma atenção maior para <strong>${worstSubject || 'Nenhuma específica'}</strong>.</p>
@@ -1173,7 +1110,6 @@
                 `;
                 aiContainer.innerHTML = aiText;
 
-                // 4. Desenha o Gráfico (Chart.js)
                 renderPerformanceChart(data.chart.labels, data.chart.data);
 
             } catch (error) {
@@ -1181,7 +1117,7 @@
             }
         }
 
-        let dashboardChartInstance = null; // Variável para controlar o gráfico do Dashboard
+        let dashboardChartInstance = null; 
 
         async function updateDashboardChart() {
             if (!currentUser) return;
@@ -1195,7 +1131,6 @@
 
                 if (data.empty) return; 
 
-                // 1. Destrói gráfico anterior se existir (Correção do erro "Canvas in use")
                 const existingChart = Chart.getChart(canvas);
                 if (existingChart) {
                     existingChart.destroy();
@@ -1203,25 +1138,24 @@
 
                 const ctx = canvas.getContext('2d');
 
-                // 2. Cria o gráfico de BARRAS (Igual ao antigo)
                 new Chart(ctx, {
-                    type: 'bar', // <--- MUDADO AQUI: Volta para 'bar'
+                    type: 'bar', 
                     data: {
-                        labels: data.chart.labels, // Ex: Matemática, História...
+                        labels: data.chart.labels, 
                         datasets: [{
                             label: '% de Aproveitamento',
-                            data: data.chart.data,     // Ex: 70, 50...
+                            data: data.chart.data,     
                             backgroundColor: [
                                 '#37A5E0', '#FCD440', '#4ADE80', '#F87171', '#A78BFA', '#2dd4bf', '#f472b6'
                             ],
-                            borderRadius: 5, // Bordas arredondadas na barra
-                            barThickness: 30 // Espessura da barra (ajuste se quiser mais fina/grossa)
+                            borderRadius: 5, 
+                            barThickness: 30 
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        scales: { // <--- IMPORTANTE: Define o eixo Y de 0 a 100
+                        scales: { 
                             y: {
                                 beginAtZero: true,
                                 max: 100,
@@ -1232,7 +1166,7 @@
                         },
                         plugins: {
                             legend: {
-                                display: false // Esconde a legenda (pois os nomes já estão embaixo das barras)
+                                display: false 
                             },
                             tooltip: {
                                 callbacks: {
@@ -1253,7 +1187,6 @@
         function renderPerformanceChart(labels, dataValues) {
             const ctx = document.getElementById('performanceDetailChart').getContext('2d');
 
-            // Se já existe um gráfico, destrói antes de criar outro (evita bugs visuais)
             if (performanceChartInstance) {
                 performanceChartInstance.destroy();
             }
@@ -1261,10 +1194,10 @@
             performanceChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels, // Ex: ['Matemática', 'Física']
+                    labels: labels, 
                     datasets: [{
                         label: '% de Acerto',
-                        data: dataValues, // Ex: [75, 40]
+                        data: dataValues, 
                         backgroundColor: [
                             '#37A5E0', '#FCD440', '#37A5E0', '#FCD440', '#37A5E0'
                         ],
@@ -1348,7 +1281,6 @@
                     ? new Date(lastReply.createdAt)
                     : new Date(updatedTopicFromServer.createdAt);
 
-                // Atualiza o array forumTopics se já estamos usando o backend
                 if (forumTopics.length) {
                     forumTopics = forumTopics.map(t => {
                         if (String(t.id) !== String(updatedTopicFromServer._id)) return t;
@@ -1415,7 +1347,6 @@
 
             const userId = currentUser?.id || null;
 
-            // Tópico temporário
             const tempTopic = {
                 id: Date.now().toString(),
                 userId,
@@ -1427,19 +1358,15 @@
                 repliesData: []
             };
 
-            // CORREÇÃO 1: Manipular a lista diretamente (funciona com const)
-            // Se forumTopics tem dados, usa ele. Se não, usa o mock.
+
             const targetList = (forumTopics.length > 0) ? forumTopics : mockForumTopics;
             
-            // Adiciona no começo da lista (unshift funciona em const)
             targetList.unshift(tempTopic);
 
-            // Nota: Removi as linhas que faziam "forumTopics = ..." pois elas causavam o erro.
 
             forumState.currentPage = 1;
             displayForumTopics();
 
-            // Tenta salvar no backend
             (async () => {
                 try {
                     const res = await fetch(`${SERVER_URL}/api/forum`, {
@@ -1452,12 +1379,11 @@
 
                     const saved = await res.json();
 
-                    // CORREÇÃO 2: Atualizar o ID sem substituir a lista inteira
-                    // Em vez de .map (que cria nova lista), achamos o item e mudamos só o ID dele
+
                     if (forumTopics.length) {
                         const index = forumTopics.findIndex(t => t.id === tempTopic.id);
                         if (index !== -1) {
-                            forumTopics[index].id = saved._id; // Isso é permitido em const!
+                            forumTopics[index].id = saved._id; 
                         }
                     }
                     
@@ -1553,11 +1479,10 @@
         
         async function getAIExplanation(question) {
             const aiContent = document.getElementById('ai-content');
-            // Animação de carregando
+
             aiContent.innerHTML = `<div class="flex items-center justify-center"><svg class="animate-spin h-5 w-5 mr-3 text-[#37A5E0]" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>O EstudaGênio está analisando...</span></div>`;
 
-            // 1. Montamos um texto único (Prompt) para enviar ao servidor
-            // Não precisamos montar o objeto complexo 'payload' aqui, o servidor fará isso.
+
             const promptParaIA = `Aja como um tutor especialista. Explique esta questão:
             
             Enunciado: ${question.statement}
@@ -1567,23 +1492,20 @@
             Explique por que a alternativa correta é a correta e comente brevemente as outras.`;
 
             try {
-                // 2. Usamos a variável CHATBOT_API_URL (que aponta para /api/chat)
-                // Se der erro de variável não definida, troque por `${SERVER_URL}/api/chat`
+
                 const response = await fetch(CHATBOT_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: promptParaIA }) // O servidor espera "message"
+                    body: JSON.stringify({ message: promptParaIA }) 
                 });
                 
                 if (!response.ok) {
                     throw new Error(`Erro no servidor: ${response.statusText}`);
                 }
 
-                // 3. O servidor devolve { reply: "texto da resposta" }
                 const result = await response.json();
                 
                 if (result.reply) {
-                    // Formata quebras de linha para HTML
                     const formattedText = result.reply.replace(/\n/g, '<br>');
                     aiContent.innerHTML = `<p>${formattedText}</p>`;
                 } else {
@@ -1754,20 +1676,18 @@
         function finishSimulado() {
             clearInterval(simuladoState.timerInterval);
 
-            // --- 1. LÓGICA DE CÁLCULO DETALHADO ---
             let correctCount = 0;
-            let subjectStats = {}; // Vai guardar: { 'Matemática': { total: 5, correct: 2 }, ... }
+            let subjectStats = {}; 
 
             simuladoState.questions.forEach(q => {
                 const qId = q.id || q._id;
                 const userAnswer = simuladoState.userAnswers[qId];
                 const isCorrect = userAnswer === q.answer;
                 
-                // Contagem Geral
                 if (isCorrect) correctCount++;
 
-                // Contagem por Matéria (Para o Gráfico)
-                const subject = q.subject || 'Outros'; // Se não tiver matéria, vai para "Outros"
+      
+                const subject = q.subject || 'Outros'; 
                 
                 if (!subjectStats[subject]) {
                     subjectStats[subject] = { subject: subject, total: 0, correct: 0 };
@@ -1779,34 +1699,29 @@
                 }
             });
 
-            // Transforma o objeto em Array para o Backend (O MongoDB espera um Array)
             const subjectsBreakdownArray = Object.values(subjectStats);
 
             const total = simuladoState.questions.length;
             const percentage = total > 0 ? Math.round((correctCount / total) * 100) : 0;
 
-            // --- 2. ATUALIZA A TELA DE RESULTADOS (UI) ---
             document.getElementById('results-correct').textContent = correctCount;
             document.getElementById('results-incorrect').textContent = total - correctCount;
             document.getElementById('results-percentage').textContent = `${percentage}%`;
             document.getElementById('results-time').textContent = formatTime(simuladoState.timeElapsed);
             
-            // --- 3. PREPARA OS DADOS PARA O BACKEND ---
             const resultData = {
-                userId: currentUser?.id, // Garante que o ID do usuário vá junto
+                userId: currentUser?.id, 
                 title: 'Simulado Personalizado',
                 date: new Date().toLocaleDateString('pt-BR'),
-                score: `${correctCount}/${total}`, // Mantive o formato visual antigo
+                score: `${correctCount}/${total}`, 
                 
-                // NOVOS CAMPOS (Cruciais para o Dashboard)
                 totalQuestions: total,
                 correctCount: correctCount,
                 timeSpentSeconds: simuladoState.timeElapsed,
                 subjectsBreakdown: subjectsBreakdownArray
             };
 
-            // Adiciona ao histórico local (apenas visual)
-            // Nota: Para o local, adicionamos o score visualmente formatado
+
             const localDisplayData = { ...resultData, score: `${correctCount}/${total} (${percentage}%)` };
             if (typeof mockSimuladoHistory !== 'undefined') {
                 mockSimuladoHistory.unshift(localDisplayData);
@@ -1815,7 +1730,6 @@
                 displaySimuladoHistory();
             }
 
-            // --- 4. ENVIA PARA O BANCO DE DADOS ---
             saveSimuladoResultToBackend(resultData);
 
             showView('simulado-results');
@@ -1856,7 +1770,6 @@
 
             const messagesContainer = document.getElementById('chat-messages');
 
-            // Display user message
             const userMessageDiv = document.createElement('div');
             userMessageDiv.className = 'flex items-start gap-3 justify-end';
             userMessageDiv.innerHTML = `
@@ -1873,7 +1786,6 @@
             input.value = '';
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-            // Show bot thinking indicator
             const thinkingDiv = document.createElement('div');
             thinkingDiv.className = 'flex items-start gap-3';
             thinkingDiv.innerHTML = `
@@ -1888,12 +1800,11 @@
             lucide.createIcons({ nodes: [thinkingDiv.querySelector('i')] });
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
             
-            // Chama o chatbot no servidor (Node + Gemini)
             try {
                 const response = await fetch(CHATBOT_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message }) // manda só o texto da pergunta
+                    body: JSON.stringify({ message }) 
                 });
 
                 if (!response.ok) {

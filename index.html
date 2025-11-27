@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EstudaGênio - Transforme Seus Estudos</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Google Fonts (Inter) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script>
@@ -69,11 +66,9 @@
 </head>
 <body class="bg-white text-slate-900 selection:bg-[#16A2E1] selection:text-white relative">
 
-    <!-- Navbar (Fixa, fora do wrapper para garantir z-index correto sobre tudo) -->
     <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-6">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             
-            <!-- Logo -->
             <div class="flex items-center cursor-pointer" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
                 <svg class="h-8 w-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 3L1 9L12 15L21 9L12 3Z" stroke="#37A5E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -85,7 +80,6 @@
                 </span>
             </div>
 
-            <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-8 font-medium text-slate-600">
                 <a href="#como-funciona" class="hover:text-[#16A2E1] transition-colors">Como funciona</a>
                 <a href="#planos" class="hover:text-[#16A2E1] transition-colors">Planos</a>
@@ -95,13 +89,11 @@
                 </a>
             </div>
 
-            <!-- Mobile Menu Button -->
             <button class="md:hidden text-slate-800" onclick="toggleMenu()">
                 <i data-lucide="menu" id="menu-icon" class="w-7 h-7"></i>
             </button>
         </div>
 
-        <!-- Mobile Menu Dropdown -->
         <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 right-0 bg-white shadow-lg p-6 flex-col gap-4 border-t border-slate-100">
             <a href="#como-funciona" class="text-lg font-medium text-slate-600 text-left" onclick="toggleMenu()">Como funciona</a>
             <a href="#planos" class="text-lg font-medium text-slate-600 text-left" onclick="toggleMenu()">Planos</a>
@@ -112,22 +104,17 @@
         </div>
     </nav>
 
-    <!-- Wrapper Principal com Overflow Hidden -->
-    <!-- Isso cortará qualquer elemento (como as bolhas de fundo) que tente ultrapassar o rodapé -->
+
     <div class="relative overflow-hidden w-full">
         
-        <!-- Elementos de Fundo -->
         <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-[#16A2E1]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none z-0"></div>
         <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#FFD34E]/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none z-0"></div>
 
-        <!-- Hero Section -->
         <main id="home" class="pt-32 pb-20 lg:pt-48 lg:pb-32 px-6">
             <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
                 
-                <!-- Lado Esquerdo -->
                 <div class="flex flex-col gap-8 text-center lg:text-left animate-fade-in-up">
                     
-                    <!-- Badge -->
                     <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-[#16A2E1] rounded-full text-sm font-bold w-fit mx-auto lg:mx-0 shadow-sm border border-blue-100">
                         <span class="relative flex h-3 w-3">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#16A2E1] opacity-75"></span>
@@ -136,7 +123,6 @@
                         Nova plataforma 2025
                     </div>
 
-                    <!-- Título -->
                     <h1 class="text-5xl lg:text-7xl font-extrabold leading-[1.1] text-slate-900 tracking-tight">
                         Transforme Seus Estudos. <br class="hidden lg:block"/>
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#16A2E1] to-blue-600">
@@ -144,13 +130,11 @@
                         </span>
                     </h1>
 
-                    <!-- Subtítulo -->
                     <p class="text-lg lg:text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                         Conteúdos simples, diretos e focados nos vestibulares do Brasil. 
                         Estude do seu jeito, no seu ritmo e conquiste sua aprovação sem estresse.
                     </p>
 
-                    <!-- Botão CTA -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
                         <a href="cadastro.html" class="group relative px-8 py-4 bg-[#FFD34E] text-slate-900 text-lg font-bold rounded-full shadow-[0_10px_20px_-10px_rgba(255,211,78,0.6)] hover:shadow-[0_15px_30px_-10px_rgba(255,211,78,0.8)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden">
                             <span class="relative z-10">Começar Agora</span>
@@ -159,7 +143,6 @@
                         </a>
                     </div>
 
-                    <!-- Features -->
                     <div class="grid grid-cols-2 gap-y-6 gap-x-4 pt-8 border-t border-slate-100 mt-4">
                         <div class="flex items-center gap-3 text-slate-700 group hover:text-[#16A2E1] transition-colors cursor-default">
                             <div class="p-2 bg-blue-50 text-[#16A2E1] rounded-lg group-hover:scale-110 transition-transform duration-300">
@@ -188,15 +171,11 @@
                     </div>
                 </div>
 
-                <!-- Lado Direito: Imagem -->
                 <div class="relative lg:h-[600px] flex items-center justify-center animate-fade-in-right opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
-                    <!-- Círculo decorativo -->
                     <div class="absolute inset-0 bg-gradient-to-tr from-[#16A2E1]/20 to-[#FFD34E]/20 rounded-[3rem] rotate-3 transform scale-90 blur-xl"></div>
                     
-                    <!-- Container da Imagem -->
                     <div class="relative w-full h-full max-w-lg mx-auto bg-white p-4 rounded-[2.5rem] shadow-2xl shadow-blue-900/10 border border-slate-100 overflow-hidden group">
                         
-                        <!-- Floating Card 1 -->
                         <div class="absolute top-8 left-8 z-20 bg-white p-3 rounded-2xl shadow-lg flex items-center gap-3 animate-float border border-slate-100">
                             <div class="bg-green-100 p-2 rounded-full text-green-600">
                                 <i data-lucide="check-circle-2" class="w-5 h-5"></i>
@@ -207,7 +186,6 @@
                             </div>
                         </div>
 
-                        <!-- Floating Card 2 -->
                         <div class="absolute bottom-10 right-8 z-20 bg-white p-4 rounded-2xl shadow-lg animate-float-delayed border border-slate-100 max-w-[160px]">
                             <div class="flex items-center gap-2 mb-2">
                                 <div class="w-2 h-2 rounded-full bg-[#FFD34E]"></div>
@@ -219,17 +197,14 @@
                             <p class="text-right text-xs font-bold text-[#16A2E1] mt-1">85%</p>
                         </div>
 
-                        <!-- Imagem -->
                         <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Estudante" class="w-full h-full object-cover rounded-[2rem] transform group-hover:scale-105 transition-transform duration-700">
 
-                        <!-- Overlay -->
                         <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/40 to-transparent rounded-b-[2rem] pointer-events-none"></div>
                     </div>
                 </div>
             </div>
         </main>
 
-        <!-- Social Proof -->
         <section class="border-y border-slate-100 bg-slate-50/50 py-12">
             <div class="max-w-7xl mx-auto px-6 text-center">
                 <p class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-8">
@@ -245,7 +220,6 @@
             </div>
         </section>
 
-        <!-- Como Funciona -->
         <section id="como-funciona" class="py-20 bg-white">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="text-center mb-16">
@@ -256,21 +230,18 @@
                 <div class="grid md:grid-cols-3 gap-8 relative">
                     <div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-blue-100 -translate-y-1/2 z-0"></div>
 
-                    <!-- Passo 1 -->
                     <div class="relative z-10 bg-white p-8 rounded-2xl border border-slate-100 shadow-lg text-center group hover:-translate-y-2 transition-all duration-300">
                         <div class="w-16 h-16 bg-[#16A2E1] text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">1</div>
                         <h3 class="text-xl font-bold mb-3 text-slate-800">Personalize sua Rotina</h3>
                         <p class="text-slate-500 leading-relaxed">Defina seus objetivos e tempo disponível. Nossa IA cria o plano perfeito para você.</p>
                     </div>
                     
-                    <!-- Passo 2 -->
                     <div class="relative z-10 bg-white p-8 rounded-2xl border border-slate-100 shadow-lg text-center group hover:-translate-y-2 transition-all duration-300">
                         <div class="w-16 h-16 bg-[#16A2E1] text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">2</div>
                         <h3 class="text-xl font-bold mb-3 text-slate-800">Domine os Conteúdos</h3>
                         <p class="text-slate-500 leading-relaxed">Acesse resumos diretos, videoaulas curtas e questões focadas no que realmente cai.</p>
                     </div>
 
-                    <!-- Passo 3 -->
                     <div class="relative z-10 bg-white p-8 rounded-2xl border border-slate-100 shadow-lg text-center group hover:-translate-y-2 transition-all duration-300">
                         <div class="w-16 h-16 bg-[#16A2E1] text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg shadow-blue-200 group-hover:rotate-6 transition-transform">3</div>
                         <h3 class="text-xl font-bold mb-3 text-slate-800">Evolua Constantemente</h3>
@@ -280,7 +251,6 @@
             </div>
         </section>
 
-        <!-- Planos -->
         <section id="planos" class="py-20 bg-slate-50 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-[#16A2E1]/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/4 pointer-events-none"></div>
             
@@ -291,7 +261,6 @@
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    <!-- Plano Mensal -->
                     <div class="bg-white p-8 rounded-3xl border-2 border-slate-100 shadow-xl hover:border-blue-200 transition-all duration-300">
                         <h3 class="text-2xl font-bold text-slate-800 mb-2">Mensal</h3>
                         <p class="text-slate-500 mb-6">Flexibilidade total para você.</p>
@@ -319,7 +288,6 @@
                         </a>
                     </div>
 
-                    <!-- Plano Anual -->
                     <div class="bg-white p-8 rounded-3xl border-2 border-[#FFD34E] shadow-xl shadow-yellow-100 relative transform hover:-translate-y-2 transition-all duration-300">
                         <div class="absolute top-0 right-8 bg-[#FFD34E] text-slate-900 text-xs font-bold px-3 py-1.5 rounded-b-lg uppercase tracking-wider">Mais Popular</div>
                         <h3 class="text-2xl font-bold text-slate-800 mb-2">Anual Gênio</h3>
@@ -361,7 +329,6 @@
             </div>
         </section>
 
-        <!-- Depoimentos -->
         <section id="depoimentos" class="py-20 bg-white">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="text-center mb-16">
@@ -370,7 +337,6 @@
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-8">
-                    <!-- Depoimento 1 -->
                     <div class="bg-slate-50 p-8 rounded-2xl border border-slate-100 relative hover:bg-blue-50/30 transition-colors">
                         <div class="flex gap-1 text-[#FFD34E] mb-4">
                             <i data-lucide="star" class="w-5 h-5 fill-current"></i>
@@ -391,7 +357,6 @@
                         </div>
                     </div>
 
-                    <!-- Depoimento 2 -->
                     <div class="bg-slate-50 p-8 rounded-2xl border border-slate-100 relative hover:bg-blue-50/30 transition-colors">
                         <div class="flex gap-1 text-[#FFD34E] mb-4">
                             <i data-lucide="star" class="w-5 h-5 fill-current"></i>
@@ -412,7 +377,6 @@
                         </div>
                     </div>
 
-                    <!-- Depoimento 3 -->
                     <div class="bg-slate-50 p-8 rounded-2xl border border-slate-100 relative hover:bg-blue-50/30 transition-colors">
                         <div class="flex gap-1 text-[#FFD34E] mb-4">
                             <i data-lucide="star" class="w-5 h-5 fill-current"></i>
@@ -436,7 +400,6 @@
             </div>
         </section>
 
-        <!-- Footer -->
         <footer class="bg-slate-900 text-slate-400 py-12 relative z-10">
             <div class="max-w-7xl mx-auto px-6 text-center md:text-left md:flex justify-between items-center">
                 <div class="flex items-center justify-center md:justify-start mb-4 md:mb-0">
@@ -452,14 +415,11 @@
                 <p>© 2024 EstudaGênio. Todos os direitos reservados.</p>
             </div>
         </footer>
-    </div> <!-- Fim do Wrapper Principal -->
+    </div> 
 
-    <!-- Scripts de Funcionalidade -->
     <script>
-        // Inicializar ícones Lucide
         lucide.createIcons();
 
-        // Navbar Scroll Effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
             if (window.scrollY > 20) {
@@ -471,7 +431,6 @@
             }
         });
 
-        // Mobile Menu Toggle
         function toggleMenu() {
             const menu = document.getElementById('mobile-menu');
             const menuIcon = document.getElementById('menu-icon');
@@ -485,7 +444,7 @@
                 menu.classList.remove('flex');
                 menuIcon.setAttribute('data-lucide', 'menu');
             }
-            lucide.createIcons(); // Recriar ícone X/Menu
+            lucide.createIcons(); 
         }
     </script>
 </body>
