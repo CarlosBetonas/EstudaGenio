@@ -10,7 +10,14 @@ const app = express();
 app.use(cors()); // Permite que o HTML converse com o servidor
 app.use(express.json());
 const path = require('path'); // Importante para lidar com caminhos
+
+// servir todos os arquivos (index.html, cadastro.html, dashboard.html, etc)
 app.use(express.static(__dirname));
+
+// rota principal -> abre o index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // --- CONEXÃO COM MONGODB ATLAS ---
 const MONGO_URI = "mongodb+srv://estudagenio_user:MBKjMNrMBT8R7@futurefast.ezadffc.mongodb.net/?appName=FutureFast";
@@ -513,10 +520,8 @@ app.get('/api/analytics/:userId', async (req, res) => {
     }
 });
 
-// Configuração para Nuvem (Porta 80 ou variável de ambiente)
-const PORT = process.env.PORT || 80; 
-const HOST = '0.0.0.0';
 
-app.listen(PORT, HOST, () => {
-    console.log(`Servidor rodando em http://${HOST}:${PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
