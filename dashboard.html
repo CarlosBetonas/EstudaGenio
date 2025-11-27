@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstudaGênio - Seu Painel de Estudos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+        .modal-backdrop {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .option-card {
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .simulado-option.selected {
+            border-color: #37A5E0;
+            background-color: #e0f2fe;
+        }
+        /* Animation classes */
+        .view-container {
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+        .view-hidden {
+            opacity: 0;
+            transform: translateY(10px);
+            position: absolute;
+            pointer-events: none;
+        }
+        .view-visible {
+            opacity: 1;
+            transform: translateY(0);
+            position: relative;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div id="app-container" class="flex h-screen bg-slate-100">
+        <aside id="sidebar" class="sidebar fixed inset-y-0 left-0 bg-white w-64 z-40 shadow-lg lg:translate-x-0 lg:static lg:inset-0 flex flex-col">
+            <div>
+                <div class="flex items-center justify-center py-6">
+                    <div class="flex items-center">
+                        <svg class="h-8 w-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 3L1 9L12 15L21 9L12 3Z" stroke="#37A5E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17 10V17C17 17.5304 16.7893 18.0391 16.4142 18.4142C16.0391 18.7893 15.5304 19 15 19H9C8.46957 19 7.96086 18.7893 7.58579 18.4142C7.21071 18.0391 7 17.5304 7 17V10" stroke="#37A5E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M21 9L12 15L3 9" stroke="#37A5E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="text-2xl font-bold ml-2" style="color: #37A5E0;">Estuda<span style="color: #FCD440;">Gênio</span></span>
+                    </div>
+                </div>
+                <nav class="mt-4 px-4" id="main-nav">
+                    <a href="#dashboard" class="nav-link flex items-center px-4 py-2 text-white bg-[#37A5E0] rounded-lg">
+                        <i data-lucide="layout-dashboard"></i><span class="ml-3">Dashboard</span>
+                    </a>
+                    <a href="#search" class="nav-link flex items-center px-4 py-2 mt-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="search"></i><span class="ml-3">Buscar Questões</span>
+                    </a>
+                    <a href="#simulados" class="nav-link flex items-center px-4 py-2 mt-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="file-text"></i><span class="ml-3">Simulados</span>
+                    </a>
+                    <a href="#performance" class="nav-link flex items-center px-4 py-2 mt-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="pie-chart"></i><span class="ml-3">Meu Desempenho</span>
+                    </a>
+                    <a href="#forum" class="nav-link flex items-center px-4 py-2 mt-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="messages-square"></i><span class="ml-3">Fórum</span>
+                    </a>
+                    <a href="#chatbot" class="nav-link flex items-center px-4 py-2 mt-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="bot"></i><span class="ml-3">Chatbot</span>
+                    </a>
+                </nav>
+            </div>
+            <div class="px-4 mt-auto mb-16">
+                <div id="premium-banner" class="p-4 rounded-lg bg-gradient-to-tr from-yellow-300 to-yellow-400 text-slate-800 text-center">
+                    <div class="flex justify-center items-center mb-2">
+                         <i data-lucide="star" class="text-slate-800 fill-current"></i>
+                         <h3 class="font-bold ml-2">Plano Premium</h3>
+                    </div>
+                    <p class="text-xs mt-1">Desbloqueie todos os recursos e acelere sua aprovação!</p>
+                    <button id="upgrade-premium-btn" class="mt-3 w-full bg-white/80 text-slate-800 font-semibold py-2 px-4 rounded-lg hover:bg-white text-sm">Fazer Upgrade</button>
+                </div>
+            </div>
+            <div id="user-info-sidebar" class="absolute bottom-0 left-0 w-full p-4 border-t border-slate-200 bg-white">
+                <div class="flex items-center">
+                    <img id="user-avatar-sidebar" class="h-10 w-10 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/475569?text=User" alt="Foto do Usuário">
+                    <div class="ml-3">
+                        <p class="text-sm font-semibold" id="user-name-sidebar">Carregando...</p>
+                        <button id="logout-btn" class="text-xs text-slate-500 hover:text-red-500">Sair</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="flex justify-between items-center p-4 bg-white border-b lg:hidden">
+                <button id="menu-button" class="text-slate-500 focus:outline-none">
+                    <i data-lucide="menu"></i>
+                </button>
+                <h1 class="text-xl font-semibold" id="header-title">Dashboard</h1>
+            </header>
+            
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-100 p-4 md:p-6 lg:p-8 relative">
+                <div id="dashboard-view" class="view-container view-visible container mx-auto">
+                    <h1 class="text-3xl font-bold text-slate-800" id="welcome-user">Olá!</h1>
+                    <p class="text-slate-600 mt-1">Vamos conquistar essa aprovação juntos. Por onde começamos hoje?</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-md">
+                            <h2 class="text-xl font-bold flex items-center"><i data-lucide="search" class="mr-2 text-[#37A5E0]"></i>Busca Avançada de Questões</h2>
+                            <p class="text-slate-500 text-sm mt-1">Encontre a questão perfeita para seu estudo.</p>
+                            <button id="go-to-search-btn" class="mt-4 w-full md:w-auto bg-[#37A5E0] text-white font-semibold py-2 px-6 rounded-lg hover:bg-[#2d8cc2] shadow-sm">Começar a buscar</button>
+                        </div>
+                         <div class="bg-white p-6 rounded-2xl shadow-md">
+                            <h2 class="text-xl font-bold flex items-center"><i data-lucide="file-text" class="mr-2 text-[#37A5E0]"></i>Simulados Personalizados</h2>
+                            <p class="text-slate-500 text-sm mt-1">Teste seus conhecimentos com simulados prontos ou crie o seu.</p>
+                            <button id="go-to-simulados-btn" class="mt-4 w-full md:w-auto bg-[#37A5E0] text-white font-semibold py-2 px-6 rounded-lg hover:bg-[#2d8cc2] shadow-sm">Ver Simulados</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+                         <div class="lg:col-span-2">
+                            <div class="bg-white p-6 rounded-2xl shadow-md">
+                                <h2 class="text-xl font-bold flex items-center"><i data-lucide="pie-chart" class="mr-2 text-[#37A5E0]"></i>Sua Análise de Desempenho</h2>
+                                <p class="text-slate-500 text-sm mt-1">Veja sua evolução e áreas para focar.</p>
+                                <div class="mt-4" style="height: 250px;"><canvas id="performanceChart"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="space-y-8">
+                            <div class="bg-white p-6 rounded-2xl shadow-md">
+                                <h2 class="text-xl font-bold flex items-center"><i data-lucide="sparkles" class="mr-2 text-[#FCD440]"></i>Recomendado para Você</h2>
+                                <div class="mt-4 space-y-3">
+                                    <div class="bg-slate-50 p-3 rounded-lg"><p class="font-semibold text-sm">Questão de Física (ENEM 2022)</p><p class="text-xs text-slate-500">Tópico: Cinemática | Dificuldade: Média</p></div>
+                                    <div class="bg-slate-50 p-3 rounded-lg"><p class="font-semibold text-sm">Questão de História (FUVEST 2021)</p><p class="text-xs text-slate-500">Tópico: Guerra Fria | Dificuldade: Difícil</p></div>
+                                    <p id="go-to-recommendations-link" class="text-sm text-[#37A5E0] font-semibold hover:underline cursor-pointer text-center pt-2">Ver mais recomendações</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-md">
+                                 <h2 class="text-xl font-bold flex items-center"><i data-lucide="messages-square" class="mr-2 text-[#37A5E0]"></i>Últimas no Fórum</h2>
+                                 <div class="mt-4 space-y-3">
+                                     <a href="#" class="latest-topic-link block hover:bg-slate-50 p-2 rounded-lg" data-topic-id="1"><p class="font-semibold text-sm truncate">Como resolver a questão 42 de matemática da UNICAMP?</p><p class="text-xs text-slate-500">por Maria Silva - 2 respostas</p></a>
+                                     <a href="#" class="latest-topic-link block hover:bg-slate-50 p-2 rounded-lg" data-topic-id="2"><p class="font-semibold text-sm truncate">Dicas de citação para redação do ENEM</p><p class="text-xs text-slate-500">por João Pereira - 5 respostas</p></a>
+                                 </div>
+                                 <button id="go-to-forum-btn" class="mt-4 w-full bg-slate-200 text-slate-700 font-semibold py-2 px-4 rounded-lg hover:bg-slate-300">Ir para o Fórum</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="search-view" class="view-container view-hidden container mx-auto">
+                    <h1 class="text-3xl font-bold text-slate-800">Explore as Questões</h1>
+                    <p class="text-slate-600 mt-1">Filtre e encontre exatamente o que precisa para seus estudos.</p>
+                    
+                    <div class="mt-6 bg-white p-4 rounded-xl shadow-sm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <input id="filter-theme" type="text" placeholder="Filtrar por tema..." class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#37A5E0]">
+                            <select id="filter-exam" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#37A5E0]">
+                                <option value="">Todas as Provas</option><option>ENEM</option><option>FUVEST</option><option>UNICAMP</option><option>VUNESP</option>
+                            </select>
+                            <select id="filter-difficulty" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#37A5E0]">
+                                <option value="">Todas as Dificuldades</option><option>Fácil</option><option>Média</option><option>Difícil</option>
+                            </select>
+                            <div class="flex items-center gap-2">
+                                <button id="filter-button" class="w-full bg-[#37A5E0] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#2d8cc2] shadow-sm">Filtrar</button>
+                                <button id="clear-filter-button" title="Limpar Filtros" class="flex-shrink-0 bg-slate-200 text-slate-700 p-2.5 rounded-lg hover:bg-slate-300">
+                                    <i data-lucide="rotate-cw" class="h-5 w-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="search-results-container" class="mt-6 space-y-4"></div>
+                </div>
+                
+                <div id="simulados-view" class="view-container view-hidden container mx-auto">
+                    <h1 class="text-3xl font-bold text-slate-800">Central de Simulados</h1>
+                    <p class="text-slate-600 mt-1">Pratique com nossos simulados prontos ou crie o seu.</p>
+
+                    <div class="mt-8">
+                        <h2 class="text-2xl font-semibold">Simulados Prontos</h2>
+                        <div id="premade-simulados-container" class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        </div>
+                    </div>
+
+                    <div class="mt-12">
+                        <h2 class="text-2xl font-semibold">Crie seu Simulado Personalizado</h2>
+                        <div class="mt-4 bg-white p-6 rounded-2xl shadow-md">
+                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <select id="custom-simulado-subject" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#37A5E0]">
+                                    <option value="Todas">Todas as Matérias</option><option>Matemática</option><option>Física</option><option>História</option><option>Química</option><option>Biologia</option>
+                                </select>
+                                <select id="custom-simulado-difficulty" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#37A5E0]">
+                                    <option value="">Qualquer Dificuldade</option><option>Fácil</option><option>Média</option><option>Difícil</option>
+                                </select>
+                                <input id="custom-simulado-qnt" type="number" value="10" placeholder="Número de questões" class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#37A5E0]">
+                            </div>
+                            <button id="generate-custom-simulado-btn" class="mt-6 w-full md:w-auto bg-[#FCD440] text-slate-800 font-bold py-2 px-6 rounded-lg hover:opacity-90">Gerar Simulado Personalizado</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="simulado-active-view" class="view-container view-hidden container mx-auto">
+                    <div class="bg-white p-6 rounded-2xl shadow-md">
+                        <div class="flex justify-between items-center border-b pb-4">
+                            <div>
+                                <h1 class="text-2xl font-bold text-slate-800">Simulado em Andamento</h1>
+                                <p id="simulado-question-counter" class="text-slate-500"></p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-slate-500">Tempo Restante</p>
+                                <p id="simulado-timer" class="text-2xl font-bold text-[#37A5E0]">--:--</p>
+                            </div>
+                        </div>
+                        <div id="simulado-question-area" class="mt-6"></div>
+                        <div class="mt-8 flex justify-between items-center">
+                            <button id="simulado-prev-btn" class="bg-slate-200 text-slate-700 font-semibold py-2 px-6 rounded-lg hover:bg-slate-300">Anterior</button>
+                            <button id="simulado-next-btn" class="bg-[#37A5E0] text-white font-semibold py-2 px-6 rounded-lg hover:bg-[#2d8cc2]">Próxima</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="simulado-results-view" class="view-container view-hidden container mx-auto text-center">
+                    <div class="bg-white p-8 rounded-2xl shadow-md max-w-2xl mx-auto">
+                        <i data-lucide="check-circle-2" class="mx-auto h-16 w-16 text-green-500"></i>
+                        <h1 class="text-3xl font-bold text-slate-800 mt-4">Simulado Finalizado!</h1>
+                        <p class="text-slate-600 mt-1">Confira seu desempenho abaixo.</p>
+                        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                            <div class="bg-slate-50 p-4 rounded-lg"><p class="text-sm text-slate-500">Acertos</p><p id="results-correct" class="text-2xl font-bold text-green-600">0</p></div>
+                             <div class="bg-slate-50 p-4 rounded-lg"><p class="text-sm text-slate-500">Erros</p><p id="results-incorrect" class="text-2xl font-bold text-red-600">0</p></div>
+                             <div class="bg-slate-50 p-4 rounded-lg"><p class="text-sm text-slate-500">Aproveitamento</p><p id="results-percentage" class="text-2xl font-bold text-[#37A5E0]">0%</p></div>
+                        </div>
+                         <div class="mt-6 bg-slate-50 p-4 rounded-lg"><p class="text-sm text-slate-500">Tempo Gasto</p><p id="results-time" class="text-2xl font-bold text-slate-700">00:00</p></div>
+                        <div class="mt-8 flex flex-col md:flex-row gap-4 justify-center">
+                            <button id="results-performance-btn" class="bg-[#37A5E0] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#2d8cc2]">Ver Análise Detalhada</button>
+                            <button id="results-back-btn" class="bg-slate-200 text-slate-700 font-semibold py-3 px-6 rounded-lg hover:bg-slate-300">Voltar ao Início</button>
+                        </div>
+                    </div>
+                </div>
+
+                 <div id="performance-view" class="view-container view-hidden container mx-auto">
+                    <h1 class="text-3xl font-bold text-slate-800">Meu Desempenho</h1>
+                    <p class="text-slate-600 mt-1">Analise sua evolução, identifique pontos fortes e fracos.</p>
+
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white p-5 rounded-xl shadow-md text-center">
+                            <p class="text-sm text-slate-500">Questões Resolvidas</p>
+                            <p id="perf-total-questions" class="text-3xl font-bold mt-1 text-slate-700">0</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-md text-center">
+                            <p class="text-sm text-slate-500">Aproveitamento Geral</p>
+                            <p id="perf-general-accuracy" class="text-3xl font-bold mt-1 text-green-600">0%</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-md text-center">
+                            <p class="text-sm text-slate-500">Simulados Concluídos</p>
+                            <p id="perf-simulados-count" class="text-3xl font-bold mt-1 text-slate-700">0</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-md text-center">
+                            <p class="text-sm text-slate-500">Tempo Médio / Questão</p>
+                            <p id="perf-avg-time" class="text-3xl font-bold mt-1 text-slate-700">0</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 grid grid-cols-1 lg:grid-cols-5 gap-8">
+                        <div class="lg:col-span-3 bg-white p-6 rounded-2xl shadow-md">
+                            <h2 class="text-xl font-bold">Desempenho por Matéria</h2>
+                            <div class="mt-4" style="height: 350px;">
+                                <canvas id="performanceDetailChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-md">
+                            <h2 class="text-xl font-bold flex items-center"><i data-lucide="sparkles" class="mr-2 text-[#FCD440]"></i>Análise da IA Gemini</h2>
+                            <div id="perf-ai-content" class="mt-4 text-slate-600 space-y-3 text-sm">
+                                <p><strong>Pontos Fortes:</strong> Seu desempenho em <strong>História</strong> e <strong>Química</strong> está excelente! Você demonstra um ótimo domínio dos conceitos fundamentais nessas áreas.</p>
+                                <p><strong>Área de Melhoria:</strong> Notei que seu aproveitamento em <strong>Física</strong>, especialmente em Cinemática, está um pouco abaixo das outras matérias. Que tal focarmos nisso?</p>
+                                <p><strong>Sugestão de Estudo:</strong> Recomendo revisar os conceitos de MRU e MRUV. Separei <strong>3 questões de dificuldade média</strong> sobre este tema para você praticar agora.</p>
+                                <button id="practice-suggested-btn" class="mt-2 w-full bg-[#37A5E0] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#2d8cc2]">Praticar Questões Sugeridas</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <h2 class="text-2xl font-semibold">Histórico de Simulados</h2>
+                        <div id="simulado-history-container" class="mt-4 space-y-3">
+                        </div>
+                    </div>
+                </div>
+
+                 <div id="forum-view" class="view-container view-hidden container mx-auto">
+                    <h1 class="text-3xl font-bold text-slate-800">Fórum de Discussões</h1>
+                    <p class="text-slate-600 mt-1">Tire suas dúvidas, compartilhe conhecimento e interaja com outros estudantes.</p>
+
+                    <div class="mt-8 flex flex-col md:flex-row gap-4 items-center">
+                        <div class="relative flex-grow w-full">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" placeholder="Buscar no fórum..." class="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#37A5E0]">
+                        </div>
+                        <button id="create-topic-btn" class="w-full md:w-auto flex-shrink-0 bg-[#37A5E0] text-white font-semibold py-2 px-6 rounded-lg hover:bg-[#2d8cc2] shadow-sm flex items-center justify-center">
+                            <i data-lucide="plus" class="mr-2 h-5 w-5"></i>
+                            Criar Novo Tópico
+                        </button>
+                    </div>
+                    
+                    <div id="forum-topics-container" class="mt-6 bg-white rounded-xl shadow-md">
+                    </div>
+
+                    <div id="forum-pagination-container" class="mt-6 flex justify-center items-center space-x-2">
+                    </div>
+                </div>
+                
+                <div id="forum-topic-view" class="view-container view-hidden container mx-auto">
+                    <button id="back-to-forum-btn" class="flex items-center text-sm text-[#37A5E0] font-semibold hover:underline mb-4">
+                        <i data-lucide="arrow-left" class="mr-2 h-4 w-4"></i>
+                        Voltar para o Fórum
+                    </button>
+                    <div class="bg-white rounded-2xl shadow-md p-6">
+                        <div id="topic-detail-header"></div>
+                        <div id="topic-detail-content" class="prose max-w-none mt-4 border-t pt-4"></div>
+                    </div>
+
+                    <h2 class="text-2xl font-semibold mt-8 mb-4">Respostas</h2>
+                    <div id="topic-replies-container" class="space-y-4"></div>
+
+                    <div class="mt-8">
+                         <form id="reply-form">
+                            <h3 class="text-xl font-semibold mb-2">Deixe sua Resposta</h3>
+                            <textarea id="reply-content" rows="5" required class="w-full p-3 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#37A5E0]" placeholder="Escreva sua resposta aqui..."></textarea>
+                            <button type="submit" class="mt-4 bg-[#37A5E0] text-white font-bold py-2 px-6 rounded-lg hover:bg-[#2d8cc2]">Responder</button>
+                         </form>
+                    </div>
+                </div>
+                
+                <div id="chatbot-view" class="view-container view-hidden container mx-auto">
+                    <h1 class="text-3xl font-bold text-slate-800">Chatbot EstudaGênio</h1>
+                    <p class="text-slate-600 mt-1">Converse com nossa IA para tirar dúvidas sobre qualquer matéria!</p>
+                    
+                    <div class="mt-8 bg-white rounded-2xl shadow-md h-[70vh] flex flex-col">
+                        <div id="chat-messages" class="flex-1 p-6 space-y-4 overflow-y-auto">
+                            <div class="flex items-start gap-3">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-[#37A5E0] flex items-center justify-center text-white">
+                                    <i data-lucide="bot"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-700">EstudaGênio IA</p>
+                                    <div class="bg-slate-100 p-3 rounded-lg mt-1">
+                                        <p>Olá! Sou a IA do EstudaGênio. Como posso ajudar nos seus estudos hoje? Pergunte sobre qualquer matéria, de matemática a história!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 bg-slate-50 border-t">
+                            <form id="chatbot-form" class="flex items-center gap-4">
+                                <input type="text" id="chatbot-input" placeholder="Digite sua dúvida aqui..." class="w-full px-4 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#37A5E0]" autocomplete="off">
+                                <button type="submit" class="flex-shrink-0 bg-[#37A5E0] text-white font-semibold p-2.5 rounded-lg hover:bg-[#2d8cc2] shadow-sm">
+                                    <i data-lucide="send"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+            </main>
+        </div>
+    </div>
+    
+    <div id="question-modal" class="modal-backdrop hidden opacity-0 fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="modal-content opacity-0 scale-95 bg-white w-full max-w-2xl rounded-2xl shadow-xl p-6 relative flex flex-col max-h-[90vh]">
+            <button id="close-modal-button" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 z-10">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="flex-shrink-0">
+                <div id="modal-body"></div>
+                <div id="answer-feedback" class="mt-4 p-3 rounded-lg text-center font-semibold hidden"></div>
+            </div>
+            <div class="flex-grow overflow-y-auto mt-4 pt-4 border-t pr-4 -mr-4">
+                 <div id="ai-explanation">
+                    <h3 class="text-lg font-bold flex items-center text-[#37A5E0]"><i data-lucide="sparkles" class="mr-2"></i>Explicação da IA Gemini</h3>
+                    <div id="ai-content" class="mt-2 p-4 bg-slate-50 rounded-lg text-slate-700 prose max-w-none"></div>
+                     <button id="get-ai-explanation" class="mt-4 w-full bg-[#FCD440] text-slate-800 font-bold py-2 px-4 rounded-lg hover:opacity-90">
+                        Pedir explicação da IA
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="new-topic-modal" class="modal-backdrop hidden opacity-0 fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="modal-content opacity-0 scale-95 bg-white w-full max-w-2xl rounded-2xl shadow-xl p-6 relative flex flex-col">
+             <button id="close-new-topic-modal" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 z-10">
+                <i data-lucide="x"></i>
+            </button>
+            <h2 class="text-2xl font-bold text-slate-800">Criar Novo Tópico</h2>
+            <form id="new-topic-form" class="mt-4 space-y-4">
+                <div>
+                    <label for="topic-title" class="block text-sm font-medium text-slate-700">Título do Tópico</label>
+                    <input type="text" id="topic-title" required class="mt-1 block w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#37A5E0]">
+                </div>
+                <div>
+                    <label for="topic-content" class="block text-sm font-medium text-slate-700">Sua Dúvida ou Mensagem</label>
+                    <textarea id="topic-content" rows="6" required class="mt-1 block w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#37A5E0]"></textarea>
+                </div>
+                <div class="flex justify-end gap-4">
+                    <button type="button" id="cancel-topic-btn" class="bg-slate-200 text-slate-700 font-semibold py-2 px-6 rounded-lg hover:bg-slate-300">Cancelar</button>
+                    <button type="submit" class="bg-[#37A5E0] text-white font-bold py-2 px-6 rounded-lg hover:bg-[#2d8cc2]">Publicar Tópico</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="premium-modal" class="modal-backdrop hidden opacity-0 fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+        <div class="modal-content opacity-0 scale-95 bg-white w-full max-w-4xl rounded-2xl shadow-xl relative overflow-hidden">
+            <button id="close-premium-modal" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 z-10">
+                <i data-lucide="x"></i>
+            </button>
+            
+            <div id="plan-comparison-step">
+                 <div class="p-8 text-center">
+                    <h2 class="text-3xl font-bold text-slate-800">Desbloqueie seu Potencial Máximo</h2>
+                    <p class="text-slate-600 mt-2 max-w-2xl mx-auto">Compare os planos e escolha a melhor opção para acelerar sua aprovação com o EstudaGênio.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-slate-200">
+                    <div class="bg-white p-8">
+                        <h3 class="text-2xl font-bold">Gratuito</h3>
+                        <p class="text-slate-500">O essencial para começar.</p>
+                        <p class="text-4xl font-bold my-4">R$0<span class="text-base font-normal text-slate-500">/mês</span></p>
+                        <ul class="space-y-3 text-left">
+                            <li class="flex items-center"><i data-lucide="check" class="h-5 w-5 text-green-500 mr-2"></i>Acesso limitado a questões</li>
+                            <li class="flex items-center"><i data-lucide="check" class="h-5 w-5 text-green-500 mr-2"></i>Simulados com 10 questões</li>
+                            <li class="flex items-center"><i data-lucide="x" class="h-5 w-5 text-red-500 mr-2"></i>Explicações detalhadas da IA</li>
+                            <li class="flex items-center"><i data-lucide="x" class="h-5 w-5 text-red-500 mr-2"></i>Acesso ao Fórum</li>
+                            <li class="flex items-center"><i data-lucide="x" class="h-5 w-5 text-red-500 mr-2"></i>Análise de Desempenho</li>
+                        </ul>
+                        <button disabled class="mt-6 w-full bg-slate-200 text-slate-500 font-semibold py-3 rounded-lg cursor-not-allowed">Seu Plano Atual</button>
+                    </div>
+                    <div class="bg-slate-50 p-8">
+                        <h3 class="text-2xl font-bold text-[#37A5E0]">Premium</h3>
+                        <p class="text-slate-500">Acesso total para sua aprovação.</p>
+                        <p class="text-4xl font-bold my-4">R$29,90<span class="text-base font-normal text-slate-500">/mês</span></p>
+                         <ul class="space-y-3 text-left">
+                            <li class="flex items-center"><i data-lucide="check" class="h-5 w-5 text-green-500 mr-2"></i>Acesso <strong>ilimitado</strong> a questões</li>
+                            <li class="flex items-center"><i data-lucide="check" class="h-5 w-5 text-green-500 mr-2"></i>Simulados <strong>ilimitados</strong></li>
+                            <li class="flex items-center"><i data-lucide="check" class="h-5 w-5 text-green-500 mr-2"></i>Explicações detalhadas da IA</li>
+                            <li class="flex items-center"><i data-lucide="check" class="h-5 w-5 text-green-500 mr-2"></i>Acesso ao Fórum</li>
+                            <li class="flex items-center"><i data-lucide="check" class="h-5 w-5 text-green-500 mr-2"></i>Análise de Desempenho</li>
+                        </ul>
+                        <button id="subscribe-btn" class="mt-6 w-full bg-[#37A5E0] text-white font-bold py-3 rounded-lg hover:bg-[#2d8cc2]">Assinar Plano Premium</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="payment-step" class="hidden">
+                 <div class="p-8 text-center">
+                    <button id="back-to-plans-btn" class="absolute top-4 left-4 flex items-center text-sm font-semibold text-slate-600 hover:text-slate-800"><i data-lucide="arrow-left" class="h-4 w-4 mr-1"></i> Voltar</button>
+                    <h2 class="text-3xl font-bold text-slate-800">Finalize sua Assinatura</h2>
+                    <p class="text-slate-600 mt-2">Pague com Pix para ter acesso imediato.</p>
+                </div>
+                <div class="p-8 flex flex-col md:flex-row items-center justify-center gap-8">
+                    <div class="text-center">
+                        <img src="https://placehold.co/256x256/ffffff/000000?text=Scan+QR+Code" alt="QR Code para pagamento Pix" class="mx-auto rounded-lg shadow-md">
+                        <p class="mt-4 font-semibold">1. Abra o app do seu banco</p>
+                        <p class="text-sm text-slate-500">2. Escolha pagar com QR Code</p>
+                    </div>
+                    <div class="md:border-l md:pl-8 w-full md:w-auto text-center">
+                        <p class="font-semibold mb-2">Ou pague com Pix Copia e Cola:</p>
+                        <div class="bg-slate-100 p-3 rounded-lg">
+                            <p id="pix-code" class="text-sm text-slate-700 break-all">000201265802BR5913NOME.DO.RECEBEDOR6008CIDADEBR622905252d1b1a0e7f9b4b5e6f0b0b0a0</p>
+                        </div>
+                        <button id="copy-pix-code-btn" class="mt-4 w-full bg-[#37A5E0] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#2d8cc2] flex items-center justify-center">
+                            <i data-lucide="copy" class="mr-2 h-4 w-4"></i>
+                            <span id="copy-btn-text">Copiar Código</span>
+                        </button>
+                        <button id="confirm-payment-btn" class="mt-4 w-full bg-green-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-600">Já paguei</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="payment-success-step" class="hidden p-12 text-center">
+                <i data-lucide="check-circle-2" class="mx-auto h-20 w-20 text-green-500"></i>
+                <h2 class="text-3xl font-bold text-slate-800 mt-6">Pagamento Aprovado!</h2>
+                <p class="text-slate-600 mt-2 max-w-md mx-auto">Parabéns! Você agora é um membro Premium. Todos os recursos foram desbloqueados.</p>
+                <button id="start-studying-btn" class="mt-8 w-full max-w-xs mx-auto bg-[#37A5E0] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#2d8cc2]">Começar a Estudar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const SERVER_URL = "https://estudagenio-backend-production.up.railway.app";
+
+        function verifyAuth() {
+            const userId =
+                localStorage.getItem('userId') || sessionStorage.getItem('userId');
+
+            if (!userId) {
+                window.location.href = "cadastro.html";
+            }
+        }
+
+
+
+        let isPremiumUser = false;
+        let currentUser = null;
+
+        const CHATBOT_API_URL = `${SERVER_URL}/api/chat`;
+
+
+        
+        const mockQuestions = [
+            { id: 1, exam: 'ENEM', subject: 'Matemática', difficulty: 'Média', theme: 'Probabilidade', statement: 'Em um sorteio com 10 bolas numeradas de 1 a 10, qual a probabilidade de sortear um número par?', options: ['A) 10%', 'B) 20%', 'C) 40%', 'D) 50%'], answer: 'D) 50%' },
+            { id: 2, exam: 'FUVEST', subject: 'Física', difficulty: 'Difícil', theme: 'Cinemática', statement: 'Um projétil é lançado com um ângulo de 45° e velocidade inicial de 100 m/s. Desprezando a resistência do ar, qual o alcance máximo do projétil? (g = 10 m/s²)', options: ['A) 500m', 'B) 1000m', 'C) 1500m', 'D) 2000m'], answer: 'B) 1000m' },
+            { id: 3, exam: 'ENEM', subject: 'História', difficulty: 'Fácil', theme: 'Guerra Fria', statement: 'Qual evento é considerado o marco simbólico do fim da Guerra Fria?', options: ['A) A queda do Muro de Berlim', 'B) A Crise dos Mísseis de Cuba', 'C) A Guerra do Vietnã', 'D) A criação da OTAN'], answer: 'A) A queda do Muro de Berlim' },
+            { id: 4, exam: 'UNICAMP', subject: 'Biologia', difficulty: 'Média', theme: 'Genética', statement: 'Qual o resultado esperado do cruzamento entre um indivíduo heterozigoto (Aa) e um homozigoto recessivo (aa)?', options: ['A) 100% Aa', 'B) 50% Aa e 50% aa', 'C) 100% aa', 'D) 75% Aa e 25% aa'], answer: 'B) 50% Aa e 50% aa' },
+            { id: 5, exam: 'ENEM', subject: 'Química', difficulty: 'Fácil', theme: 'Estequiometria', statement: 'Qual a massa molar da água (H₂O)? (Dados: H=1u, O=16u)', options: ['A) 16 g/mol', 'B) 17 g/mol', 'C) 18 g/mol', 'D) 32 g/mol'], answer: 'C) 18 g/mol' },
+            { id: 6, exam: 'VUNESP', subject: 'Português', difficulty: 'Média', theme: 'Concordância Verbal', statement: 'Assinale a alternativa em que a concordância verbal está INCORRETA.', options: ['A) Fui eu que fiz o bolo.', 'B) Mais de um aluno chegou atrasado.', 'C) Os Estados Unidos são uma potência.', 'D) Vende-se casas neste bairro.'], answer: 'D) Vende-se casas neste bairro.' },
+            { id: 7, exam: 'ENEM', subject: 'Geografia', difficulty: 'Fácil', theme: 'Globalização', statement: 'Qual das seguintes características NÃO está associada ao processo de globalização?', options: ['A) Aumento do fluxo de capitais', 'B) Formação de blocos econômicos', 'C) Fortalecimento das fronteiras nacionais', 'D) Difusão de tecnologias de informação'], answer: 'C) Fortalecimento das fronteiras nacionais' },
+            { id: 8, exam: 'FUVEST', subject: 'Literatura', difficulty: 'Difícil', theme: 'Modernismo Brasileiro', statement: 'A obra "Macunaíma" de Mário de Andrade é caracterizada por qual traço principal?', options: ['A) Rigor formal e Parnasianismo', 'B) Linguagem coloquial e sincretismo cultural', 'C) Idealização do índio (Romantismo)', 'D) Pessimismo e determinismo (Naturalismo)'], answer: 'B) Linguagem coloquial e sincretismo cultural' },
+            { id: 9, exam: 'ENEM', subject: 'Filosofia', difficulty: 'Média', theme: 'Contratualismo', statement: 'Para Thomas Hobbes, o "estado de natureza" é caracterizado pela:', options: ['A) Harmonia social e bondade inata.', 'B) Guerra de todos contra todos.', 'C) Vontade geral e soberania popular.', 'D) Divisão dos poderes.'], answer: 'B) Guerra de todos contra todos.' },
+            { id: 10, exam: 'UNICAMP', subject: 'Física', difficulty: 'Difícil', theme: 'Termodinâmica', statement: 'Um gás ideal sofre uma expansão isotérmica. O que acontece com sua energia interna?', options: ['A) Aumenta.', 'B) Diminui.', 'C) Permanece constante.', 'D) Depende da pressão inicial.'], answer: 'C) Permanece constante.' },
+            { id: 11, exam: 'ENEM', subject: 'Física', difficulty: 'Média', theme: 'Cinemática', statement: 'Um carro parte do repouso e acelera a 2 m/s². Qual será sua velocidade após 5 segundos?', options: ['A) 5 m/s', 'B) 10 m/s', 'C) 15 m/s', 'D) 20 m/s'], answer: 'B) 10 m/s' },
+            { id: 12, exam: 'VUNESP', subject: 'Física', difficulty: 'Média', theme: 'Cinemática', statement: 'Um objeto em queda livre (sem resistência do ar) leva 3 segundos para atingir o solo. De qual altura ele caiu? (g = 10 m/s²)', options: ['A) 15m', 'B) 30m', 'C) 45m', 'D) 90m'], answer: 'C) 45m' },
+        ];
+
+        let allQuestions = []; 
+
+        const mockPremadeSimulados = [
+            { id: 'enem-rapido', title: 'Simulado Rápido ENEM', description: '10 questões de múltipla escolha sobre os temas mais comuns do ENEM.', settings: { quantity: 10, exam: 'ENEM' } },
+            { id: 'fuvest-dificil', title: 'Desafio FUVEST (Difícil)', description: '15 questões difíceis de Exatas e Humanas para testar seus limites.', settings: { quantity: 15, exam: 'FUVEST', difficulty: 'Difícil' } },
+            { id: 'mat-basica', title: 'Matemática Básica', description: '20 questões de nível fácil e médio para reforçar conceitos fundamentais.', settings: { quantity: 20, subject: 'Matemática', difficulty: ['Fácil', 'Média'] } },
+            { id: 'humanas-geral', title: 'Revisão de Humanas', description: '15 questões sobre História, Geografia e Filosofia.', settings: { quantity: 15, subject: ['História', 'Geografia', 'Filosofia'] } }
+        ];
+
+        let mockSimuladoHistory = [
+            { title: 'Simulado Rápido ENEM', date: '10/10/2025', score: '8/10 (80%)' },
+            { title: 'Matemática Básica', date: '08/10/2025', score: '15/20 (75%)' },
+        ];
+        
+        const mockForumTopics = [
+            { id: 1, title: 'Como resolver a questão 42 de matemática da UNICAMP?', author: 'Maria Silva', content: 'Alguém pode me ajudar a entender o raciocínio por trás da questão 42 da prova de 2022? Eu chego perto do resultado, mas sempre erro por pouco. Agradeço desde já!', replies: 2, lastPost: '1h atrás', repliesData: [ {author: 'João Pereira', time: '45min atrás', content: 'Oi Maria! O segredo está em usar o Teorema de Pitágoras no triângulo menor primeiro. Depois disso, a relação trigonométrica fica mais fácil de visualizar.'}, {author: 'Carlos Souza', time: '15min atrás', content: 'Exato! E cuidado com a conversão de unidades no final.'} ] },
+            { id: 2, title: 'Dicas de citação para redação do ENEM', author: 'João Pereira', content: 'Estou com dificuldade em encontrar citações "coringa" para a redação do ENEM. Vocês têm alguma sugestão de filósofos ou sociólogos que se encaixam em vários temas?', replies: 5, lastPost: '3h atrás', repliesData: [] },
+        ];
+
+        let forumTopics = [];
+
+        let simuladoState = {
+            questions: [], currentQuestionIndex: 0, userAnswers: {},
+            timerInterval: null, timeLimit: 0, timeElapsed: 0
+        };
+        
+        let forumState = {
+            currentPage: 1,
+            topicsPerPage: 5
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            verifyAuth();
+            identifyUser();
+            updateDashboardChart();
+            setupNavigation();
+            setupInteractions();
+            setupChart('performanceChart', false);
+            updatePremiumUI();
+            loadQuestionsFromBackend(); 
+            loadForumTopicsFromBackend(); 
+        });
+
+        function identifyUser() {
+            const storedId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+            const storedName = localStorage.getItem('userName') || sessionStorage.getItem('userName');
+            const storedEmail = localStorage.getItem('userEmail') || sessionStorage.getItem('userEmail');
+            
+            if (storedId) {
+                currentUser = {
+                    id: storedId,
+                    name: storedName || 'Estudante',
+                    email: storedEmail || ''
+                };
+            } else {
+                currentUser = {
+                    id: 'guest_123',
+                    name: 'Visitante',
+                    email: 'visitante@exemplo.com'
+                };
+            }
+
+            document.getElementById('welcome-user').textContent = `Olá, ${currentUser.name}!`;
+            document.getElementById('user-name-sidebar').textContent = currentUser.name;
+            const firstLetter = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('user-avatar-sidebar').src = `https://placehold.co/100x100/37A5E0/FFFFFF?text=${firstLetter}`;
+
+            fetchHistoryFromBackend();
+            fetchUserProfileFromBackend();
+        }
+
+
+        async function fetchHistoryFromBackend() {
+            if (!currentUser) return;
+            try {
+                const response = await fetch(`${SERVER_URL}/api/history?userId=${currentUser.id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    mockSimuladoHistory = data; 
+                    displaySimuladoHistory(); 
+                }
+            } catch (error) {
+                console.log("Servidor backend offline ou rota não existe. Usando dados locais.");
+            }
+        }
+
+        async function fetchUserProfileFromBackend() {
+            if (!currentUser || !currentUser.id || currentUser.id.startsWith('guest_')) return;
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/${currentUser.id}`);
+                if (!response.ok) return;
+
+                const data = await response.json();
+                const prefs = data.preferences || {};
+
+                if (typeof prefs.isPremium === 'boolean') {
+                    isPremiumUser = prefs.isPremium;
+                    updatePremiumUI();
+                }
+            } catch (error) {
+                console.error('Erro ao buscar dados do usuário no backend.', error);
+            }
+        }
+
+
+        async function loadForumTopicsFromBackend() {
+            try {
+                const res = await fetch(`${SERVER_URL}/api/forum`);
+                if (!res.ok) throw new Error('Erro ao carregar fórum do servidor');
+
+                const data = await res.json();
+
+                forumTopics = data.map((t) => {
+                    const repliesArray = t.replies || [];
+                    const lastReply = repliesArray[repliesArray.length - 1];
+                    const createdAt = t.createdAt ? new Date(t.createdAt) : null;
+                    const lastDate = lastReply?.createdAt ? new Date(lastReply.createdAt) : createdAt;
+
+                    const lastPostStr = lastDate
+                        ? `${lastDate.toLocaleDateString('pt-BR')} ${lastDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+                        : 'Sem respostas';
+
+                    return {
+                        id: t._id,
+                        userId: t.userId,
+                        author: t.author || 'Anônimo',
+                        title: t.title,
+                        content: t.content,
+                        replies: repliesArray.length,
+                        lastPost: lastPostStr,
+                        repliesData: repliesArray.map((r) => {
+                            const d = r.createdAt ? new Date(r.createdAt) : null;
+                            return {
+                                author: r.author || 'Anônimo',
+                                time: d
+                                    ? `${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+                                    : '',
+                                content: r.content
+                            };
+                        })
+                    };
+                });
+
+                forumState.currentPage = 1;
+                displayForumTopics();
+            } catch (err) {
+                console.error('Erro ao carregar fórum do backend, usando mock local.', err);
+                forumTopics = [];
+                displayForumTopics();
+            }
+        }
+
+
+        async function loadQuestionsFromBackend() {
+            try {
+                const response = await fetch(`${SERVER_URL}/api/questions`);
+                if (!response.ok) {
+                    console.warn('Falha ao carregar questões do servidor, usando mockQuestions.');
+                    allQuestions = [];
+                    return;
+                }
+
+                const data = await response.json();
+
+                allQuestions = data.map((q, index) => ({
+                    ...q,
+                    id: q.id || q._id || (index + 1)
+                }));
+
+                console.log(`Carregado ${allQuestions.length} questões do MongoDB.`);
+            } catch (error) {
+                console.error('Erro ao carregar questões do servidor, usando mockQuestions.', error);
+                allQuestions = [];
+            }
+        }
+
+
+        async function saveSimuladoResultToBackend(data) {
+            if (!currentUser) return; 
+
+            try {
+                const res = await fetch(`${SERVER_URL}/api/history`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data) 
+                });
+
+                if (!res.ok) throw new Error('Erro ao salvar histórico');
+                console.log("Histórico detalhado salvo com sucesso!");
+
+            } catch (err) {
+                console.error('Erro no saveSimuladoResultToBackend:', err);
+            }
+        }
+        
+        function updatePremiumUI() {
+            const premiumBanner = document.getElementById('premium-banner');
+            
+            if (isPremiumUser) {
+                if(premiumBanner) premiumBanner.style.display = 'none';
+            } else {
+                if(premiumBanner) premiumBanner.style.display = 'block';
+            }
+        }
+
+
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const views = document.querySelectorAll('.view-container');
+            const headerTitle = document.getElementById('header-title');
+            const premiumModal = document.getElementById('premium-modal');
+
+            window.showView = (viewId) => {
+                const premiumFeatures = ['performance', 'forum'];
+                if (premiumFeatures.includes(viewId) && !isPremiumUser) {
+                    openModal(premiumModal);
+                    return;
+                }
+
+                const currentVisible = document.querySelector('.view-visible');
+                if (currentVisible) {
+                    currentVisible.classList.remove('view-visible');
+                    currentVisible.classList.add('view-hidden');
+                }
+
+                const newView = document.getElementById(`${viewId}-view`);
+                if (newView) {
+                    setTimeout(() => {
+                        if (currentVisible) currentVisible.style.display = 'none';
+                        newView.style.display = 'block';
+                        setTimeout(() => {
+                        newView.classList.remove('view-hidden');
+                        newView.classList.add('view-visible');
+                        }, 20);
+                    }, 200);
+                }
+
+                navLinks.forEach(link => {
+                    link.classList.remove('bg-[#37A5E0]', 'text-white');
+                    link.classList.add('text-slate-600');
+                    if (link.getAttribute('href') === `#${viewId}`) {
+                        link.classList.add('bg-[#37A5E0]', 'text-white');
+                        link.classList.remove('text-slate-600');
+                        headerTitle.textContent = link.querySelector('span').textContent;
+                    }
+                });
+
+                if (viewId === 'search') {
+                    const source = (typeof allQuestions !== 'undefined' && allQuestions.length) ? allQuestions : mockQuestions;
+                    displaySearchResults(source);
+                }
+                
+                if (viewId === 'simulados') displayPremadeSimulados();
+                
+                if (viewId === 'performance') {
+                    loadPerformanceData(); 
+                }
+
+                if (viewId === 'forum') displayForumTopics();
+            };
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const viewId = e.currentTarget.getAttribute('href').substring(1);
+                    showView(viewId);
+                });
+            });
+
+            const initialView = document.getElementById('dashboard-view');
+            document.querySelectorAll('.view-container').forEach(v => {
+                if(v !== initialView) {
+                    v.style.display = 'none';
+                    v.classList.add('view-hidden');
+                    v.classList.remove('view-visible');
+                }
+            });
+        }
+
+        function setupInteractions() {
+            document.getElementById('menu-button').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+            document.getElementById('go-to-search-btn').addEventListener('click', () => showView('search'));
+            document.getElementById('go-to-simulados-btn').addEventListener('click', () => showView('simulados'));
+            document.getElementById('go-to-recommendations-link').addEventListener('click', () => showView('search'));
+            document.getElementById('go-to-forum-btn').addEventListener('click', () => showView('forum'));
+            document.getElementById('filter-button').addEventListener('click', applyFilters);
+            document.getElementById('clear-filter-button').addEventListener('click', clearFilters);
+            document.getElementById('generate-custom-simulado-btn').addEventListener('click', () => startSimulado());
+            document.getElementById('simulado-prev-btn').addEventListener('click', prevSimuladoQuestion);
+            document.getElementById('simulado-next-btn').addEventListener('click', nextSimuladoQuestion);
+            document.getElementById('results-back-btn').addEventListener('click', () => showView('dashboard'));
+            document.getElementById('results-performance-btn').addEventListener('click', () => showView('performance'));
+            document.getElementById('practice-suggested-btn').addEventListener('click', practiceSuggestedQuestions);
+            
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.removeItem('estudaGenioUser');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('lastPasswordResetTime');
+
+                sessionStorage.removeItem('estudaGenioUser');
+                sessionStorage.removeItem('userId');
+                sessionStorage.removeItem('userName');
+                sessionStorage.removeItem('userEmail');
+
+                window.location.href = 'cadastro.html';
+            });
+
+
+            const premiumModal = document.getElementById('premium-modal');
+            document.getElementById('upgrade-premium-btn').addEventListener('click', () => openModal(premiumModal));
+            document.getElementById('close-premium-modal').addEventListener('click', () => closeModal(premiumModal));
+            document.getElementById('subscribe-btn').addEventListener('click', () => {
+                document.getElementById('plan-comparison-step').style.display = 'none';
+                document.getElementById('payment-step').style.display = 'block';
+            });
+             document.getElementById('back-to-plans-btn').addEventListener('click', () => {
+                document.getElementById('payment-step').style.display = 'none';
+                document.getElementById('plan-comparison-step').style.display = 'block';
+            });
+            document.getElementById('copy-pix-code-btn').addEventListener('click', copyPixCode);
+            document.getElementById('confirm-payment-btn').addEventListener('click', confirmPayment);
+            document.getElementById('start-studying-btn').addEventListener('click', () => closeModal(premiumModal));
+
+
+            const newTopicModal = document.getElementById('new-topic-modal');
+            document.getElementById('create-topic-btn').addEventListener('click', () => openModal(newTopicModal));
+            document.getElementById('close-new-topic-modal').addEventListener('click', () => closeModal(newTopicModal));
+            document.getElementById('cancel-topic-btn').addEventListener('click', () => closeModal(newTopicModal));
+            document.getElementById('new-topic-form').addEventListener('submit', publishNewTopic);
+            document.getElementById('back-to-forum-btn').addEventListener('click', () => showView('forum'));
+            
+            document.querySelectorAll('.latest-topic-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const topicId = parseInt(e.currentTarget.dataset.topicId);
+                    if (topicId) {
+                        if (isPremiumUser) {
+                           showTopicDetail(topicId);
+                        } else {
+                           openModal(premiumModal);
+                        }
+                    }
+                });
+            });
+            
+            document.getElementById('chatbot-form').addEventListener('submit', handleChatSubmit);
+
+            const questionModal = document.getElementById('question-modal');
+            document.getElementById('close-modal-button').addEventListener('click', () => closeModal(questionModal));
+            questionModal.addEventListener('click', (e) => { if (e.target === questionModal) closeModal(questionModal); });
+        }
+        
+        function confirmPayment() {
+            isPremiumUser = true;
+            updatePremiumUI();
+            
+            document.getElementById('payment-step').style.display = 'none';
+            document.getElementById('payment-success-step').style.display = 'block';
+            
+            if(currentUser) {
+                fetch(`${SERVER_URL}/update-preferences`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUser.id, isPremium: true })
+                }).catch(err => console.error("Erro ao atualizar premium no banco", err));
+            }
+        }
+
+        function copyPixCode() {
+            const pixCode = document.getElementById('pix-code').textContent;
+            const copyBtnText = document.getElementById('copy-btn-text');
+            navigator.clipboard.writeText(pixCode).then(() => {
+                copyBtnText.textContent = 'Copiado!';
+                setTimeout(() => {
+                    copyBtnText.textContent = 'Copiar Código';
+                }, 2000);
+            });
+        }
+        
+        function practiceSuggestedQuestions() {
+            document.getElementById('filter-theme').value = 'Cinemática';
+            document.getElementById('filter-exam').value = '';
+            document.getElementById('filter-difficulty').value = 'Média';
+            
+            applyFilters();
+            showView('search');
+        }
+
+        function renderPerformanceView() {
+            setupChart('performanceDetailChart', true);
+            displaySimuladoHistory();
+        }
+
+        function displaySimuladoHistory() {
+            const container = document.getElementById('simulado-history-container');
+            container.innerHTML = mockSimuladoHistory.map(item => `
+                <div class="bg-white p-4 rounded-lg shadow-sm flex justify-between items-center">
+                    <div>
+                        <p class="font-bold">${item.title}</p>
+                        <p class="text-sm text-slate-500">Realizado em: ${item.date}</p>
+                    </div>
+                    <p class="font-semibold text-lg text-[#37A5E0]">${item.score}</p>
+                </div>
+            `).join('');
+        }
+        
+        function applyFilters() {
+            const theme = document.getElementById('filter-theme').value.toLowerCase();
+            const exam = document.getElementById('filter-exam').value;
+            const difficulty = document.getElementById('filter-difficulty').value;
+
+            const source = allQuestions.length ? allQuestions : mockQuestions;
+
+            const filteredQuestions = source.filter(q => {
+                const themeMatch = theme ? (q.theme || '').toLowerCase().includes(theme) : true;
+                const examMatch = exam ? q.exam === exam : true;
+                const difficultyMatch = difficulty ? q.difficulty === difficulty : true;
+                return themeMatch && examMatch && difficultyMatch;
+            });
+            
+            displaySearchResults(filteredQuestions);
+        }
+
+        
+        function clearFilters() {
+            document.getElementById('filter-theme').value = '';
+            document.getElementById('filter-exam').value = '';
+            document.getElementById('filter-difficulty').value = '';
+            applyFilters();
+        }
+
+        function displaySearchResults(questions) {
+            const container = document.getElementById('search-results-container');
+            container.innerHTML = '';
+            if (questions.length === 0) {
+                container.innerHTML = '<div class="bg-white p-4 rounded-lg shadow-sm text-center text-slate-500">Nenhuma questão encontrada com esses filtros.</div>';
+                return;
+            }
+            questions.forEach(q => {
+                const questionCard = `
+                    <div class="bg-white p-4 rounded-lg shadow-sm flex justify-between items-center">
+                        <div>
+                            <p class="font-bold">${q.subject} - ${q.theme}</p>
+                            <p class="text-sm text-slate-500">${q.exam} | Dificuldade: ${q.difficulty}</p>
+                        </div>
+                        <button class="view-question-btn text-sm bg-[#37A5E0] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#2d8cc2]" data-question-id="${q.id || q._id}">
+                            Ver Questão
+                        </button>
+                    </div>`;
+                container.innerHTML += questionCard;
+            });
+
+            document.querySelectorAll('.view-question-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const questionId = e.currentTarget.dataset.questionId;
+                    const source = allQuestions.length ? allQuestions : mockQuestions;
+
+                    const question = source.find(q => String(q.id || q._id) === String(questionId));
+                    if (question) {
+                        openQuestionModal(question);
+                    }
+                });
+            });
+        }
+        
+        function displayForumTopics() {
+            const container = document.getElementById('forum-topics-container');
+            const source = forumTopics.length ? forumTopics : mockForumTopics;
+            const startIndex = (forumState.currentPage - 1) * forumState.topicsPerPage;
+            const endIndex = startIndex + forumState.topicsPerPage;
+            const paginatedTopics = source.slice(startIndex, endIndex);
+
+
+            container.innerHTML = paginatedTopics.map(topic => `
+                <div class="topic-item flex items-center p-4 border-b border-slate-100 hover:bg-slate-50 last:border-b-0 cursor-pointer" data-topic-id="${topic.id}">
+                    <div class="flex-grow">
+                        <p class="font-semibold text-slate-800">${topic.title}</p>
+                        <p class="text-sm text-slate-500">por ${topic.author}</p>
+                    </div>
+                    <div class="text-center w-20">
+                        <p class="font-bold">${topic.replies}</p>
+                        <p class="text-xs text-slate-500">Respostas</p>
+                    </div>
+                    <div class="text-right w-28 text-sm text-slate-500">
+                        ${topic.lastPost}
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.topic-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const topicId = e.currentTarget.dataset.topicId;
+                    showTopicDetail(topicId);
+                })
+            });
+            renderPaginationControls();
+        }
+        
+        function renderPaginationControls() {
+            const paginationContainer = document.getElementById('forum-pagination-container');
+            const source = forumTopics.length ? forumTopics : mockForumTopics;
+            const totalPages = Math.ceil(source.length / forumState.topicsPerPage);
+
+            paginationContainer.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            let buttonsHTML = '';
+
+            buttonsHTML += `<button class="px-3 py-1 rounded-md bg-white border border-slate-300 text-slate-600 hover:bg-slate-100 ${forumState.currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}" data-page="prev">&laquo;</button>`;
+
+            for (let i = 1; i <= totalPages; i++) {
+                buttonsHTML += `<button class="px-3 py-1 rounded-md ${i === forumState.currentPage ? 'bg-[#37A5E0] text-white' : 'bg-white border border-slate-300 text-slate-600 hover:bg-slate-100'}" data-page="${i}">${i}</button>`;
+            }
+
+            buttonsHTML += `<button class="px-3 py-1 rounded-md bg-white border border-slate-300 text-slate-600 hover:bg-slate-100 ${forumState.currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}" data-page="next">&raquo;</button>`;
+            
+            paginationContainer.innerHTML = buttonsHTML;
+
+            paginationContainer.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const pageAction = e.currentTarget.dataset.page;
+                    
+                    if (pageAction === 'prev') {
+                        if (forumState.currentPage > 1) forumState.currentPage--;
+                    } else if (pageAction === 'next') {
+                        if (forumState.currentPage < totalPages) forumState.currentPage++;
+                    } else {
+                        forumState.currentPage = parseInt(pageAction);
+                    }
+                    displayForumTopics();
+                });
+            });
+        }
+
+        let performanceChartInstance = null; 
+
+        async function loadPerformanceData() {
+            if (!currentUser) return;
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/analytics/${currentUser.id}`);
+                const data = await response.json();
+
+                if (data.empty) {
+                    return;
+                }
+
+                document.getElementById('perf-total-questions').textContent = data.cards.questionsResolved;
+                document.getElementById('perf-general-accuracy').textContent = `${data.cards.generalAccuracy}%`;
+                document.getElementById('perf-simulados-count').textContent = data.cards.simuladosCompleted;
+                document.getElementById('perf-avg-time').textContent = data.cards.avgTime;
+
+                const { bestSubject, worstSubject, generalAccuracy } = data.analysisContext;
+                const aiContainer = document.getElementById('perf-ai-content');
+                
+                let aiText = `
+                    <p><strong>Pontos Fortes:</strong> Você está indo muito bem em <strong>${bestSubject || 'Geral'}</strong>! Continue assim.</p>
+                    <p><strong>Área de Melhoria:</strong> Notei que precisamos dar uma atenção maior para <strong>${worstSubject || 'Nenhuma específica'}</strong>.</p>
+                    <p><strong>Sugestão:</strong> Seu aproveitamento geral é de <strong>${generalAccuracy}%</strong>. 
+                    ${generalAccuracy > 70 ? 'Excelente ritmo!' : 'Vamos focar em fazer mais questões de nível Fácil para fixar a base.'}</p>
+                `;
+                aiContainer.innerHTML = aiText;
+
+                renderPerformanceChart(data.chart.labels, data.chart.data);
+
+            } catch (error) {
+                console.error("Erro ao carregar desempenho:", error);
+            }
+        }
+
+        let dashboardChartInstance = null; 
+
+        async function updateDashboardChart() {
+            if (!currentUser) return;
+
+            const canvas = document.getElementById('performanceChart');
+            if (!canvas) return;
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/analytics/${currentUser.id}`);
+                const data = await response.json();
+
+                if (data.empty) return; 
+
+                const existingChart = Chart.getChart(canvas);
+                if (existingChart) {
+                    existingChart.destroy();
+                }
+
+                const ctx = canvas.getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'bar', 
+                    data: {
+                        labels: data.chart.labels, 
+                        datasets: [{
+                            label: '% de Aproveitamento',
+                            data: data.chart.data,     
+                            backgroundColor: [
+                                '#37A5E0', '#FCD440', '#4ADE80', '#F87171', '#A78BFA', '#2dd4bf', '#f472b6'
+                            ],
+                            borderRadius: 5, 
+                            barThickness: 30 
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { 
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 20
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false 
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.raw + '% de Acerto';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error("Erro ao carregar gráfico do dashboard:", error);
+            }
+        }
+
+        function renderPerformanceChart(labels, dataValues) {
+            const ctx = document.getElementById('performanceDetailChart').getContext('2d');
+
+            if (performanceChartInstance) {
+                performanceChartInstance.destroy();
+            }
+
+            performanceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels, 
+                    datasets: [{
+                        label: '% de Acerto',
+                        data: dataValues, 
+                        backgroundColor: [
+                            '#37A5E0', '#FCD440', '#37A5E0', '#FCD440', '#37A5E0'
+                        ],
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+        
+        function showTopicDetail(topicId) {
+            const source = forumTopics.length ? forumTopics : mockForumTopics;
+            const topic = source.find(t => String(t.id) === String(topicId));
+            if (!topic) return;
+
+
+            document.getElementById('topic-detail-header').innerHTML = `
+                <h1 class="text-2xl font-bold">${topic.title}</h1>
+                <p class="text-sm text-slate-500 mt-1">por ${topic.author} - ${topic.lastPost}</p>
+            `;
+            document.getElementById('topic-detail-content').innerHTML = `<p>${topic.content}</p>`;
+            
+            renderTopicReplies(topic);
+
+            document.getElementById('reply-form').onsubmit = (e) => {
+                e.preventDefault();
+                postReply(topic.id);
+            };
+
+            showView('forum-topic');
+        }
+
+        function renderTopicReplies(topic) {
+            const repliesContainer = document.getElementById('topic-replies-container');
+            if (topic.repliesData.length === 0) {
+                 repliesContainer.innerHTML = '<p class="text-slate-500 text-center py-4">Nenhuma resposta ainda. Seja o primeiro a ajudar!</p>';
+                 return;
+            }
+            repliesContainer.innerHTML = topic.repliesData.map(reply => `
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <p class="font-semibold text-slate-700">${reply.author}</p>
+                        <p class="text-xs text-slate-400">${reply.time}</p>
+                    </div>
+                    <p class="mt-2 text-slate-600">${reply.content}</p>
+                </div>
+            `).join('');
+        }
+        
+        async function postReply(topicId) {
+            const content = document.getElementById('reply-content').value;
+            if (content.trim() === '') return;
+
+            const userName = document.getElementById('user-name-sidebar').textContent || 'Estudante';
+
+            try {
+                const res = await fetch(`${SERVER_URL}/api/forum/${topicId}/reply`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ author: userName, content })
+                });
+
+                if (!res.ok) throw new Error('Erro ao enviar resposta');
+
+                const updatedTopicFromServer = await res.json();
+                const repliesArray = updatedTopicFromServer.replies || [];
+                const lastReply = repliesArray[repliesArray.length - 1];
+                const lastDate = lastReply?.createdAt
+                    ? new Date(lastReply.createdAt)
+                    : new Date(updatedTopicFromServer.createdAt);
+
+                if (forumTopics.length) {
+                    forumTopics = forumTopics.map(t => {
+                        if (String(t.id) !== String(updatedTopicFromServer._id)) return t;
+
+                        return {
+                            id: updatedTopicFromServer._id,
+                            userId: updatedTopicFromServer.userId,
+                            author: updatedTopicFromServer.author || 'Anônimo',
+                            title: updatedTopicFromServer.title,
+                            content: updatedTopicFromServer.content,
+                            replies: repliesArray.length,
+                            lastPost: lastDate
+                                ? `${lastDate.toLocaleDateString('pt-BR')} ${lastDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+                                : t.lastPost,
+                            repliesData: repliesArray.map((r) => {
+                                const d = r.createdAt ? new Date(r.createdAt) : null;
+                                return {
+                                    author: r.author || 'Anônimo',
+                                    time: d
+                                        ? `${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+                                        : '',
+                                    content: r.content
+                                };
+                            })
+                        };
+                    });
+                }
+
+                const source = forumTopics.length ? forumTopics : mockForumTopics;
+                const topic = source.find(t => String(t.id) === String(updatedTopicFromServer._id));
+                if (topic) {
+                    renderTopicReplies(topic);
+                }
+
+                document.getElementById('reply-form').reset();
+            } catch (err) {
+                console.error('Erro ao enviar resposta, usando apenas memória local.', err);
+
+                const source = forumTopics.length ? forumTopics : mockForumTopics;
+                const topic = source.find(t => String(t.id) === String(topicId));
+                if (!topic) return;
+
+                const newReply = {
+                    author: userName,
+                    time: 'Agora mesmo',
+                    content
+                };
+
+                topic.repliesData.push(newReply);
+                topic.replies++;
+                renderTopicReplies(topic);
+                document.getElementById('reply-form').reset();
+            }
+        }
+
+        
+        function publishNewTopic(e) {
+            e.preventDefault();
+            const title = document.getElementById('topic-title').value;
+            const content = document.getElementById('topic-content').value;
+            const userName = document.getElementById('user-name-sidebar').textContent || 'Estudante';
+
+            if (title.trim() === '' || content.trim() === '') return;
+
+            const userId = currentUser?.id || null;
+
+            const tempTopic = {
+                id: Date.now().toString(),
+                userId,
+                author: userName,
+                title,
+                content,
+                replies: 0,
+                lastPost: 'Agora mesmo',
+                repliesData: []
+            };
+
+
+            const targetList = (forumTopics.length > 0) ? forumTopics : mockForumTopics;
+            
+            targetList.unshift(tempTopic);
+
+
+            forumState.currentPage = 1;
+            displayForumTopics();
+
+            (async () => {
+                try {
+                    const res = await fetch(`${SERVER_URL}/api/forum`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId, author: userName, title, content })
+                    });
+                    
+                    if (!res.ok) throw new Error('Erro ao criar tópico');
+
+                    const saved = await res.json();
+
+
+                    if (forumTopics.length) {
+                        const index = forumTopics.findIndex(t => t.id === tempTopic.id);
+                        if (index !== -1) {
+                            forumTopics[index].id = saved._id; 
+                        }
+                    }
+                    
+                } catch (err) {
+                    console.error('Erro ao salvar tópico no servidor.', err);
+                }
+            })();
+
+            closeModal(document.getElementById('new-topic-modal'));
+            document.getElementById('new-topic-form').reset();
+}
+
+
+        function openModal(modal) {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('.modal-content')?.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function closeModal(modal) {
+             modal.classList.add('opacity-0');
+             modal.querySelector('.modal-content')?.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                if (modal.id === 'premium-modal') {
+                    document.getElementById('payment-step').style.display = 'none';
+                    document.getElementById('payment-success-step').style.display = 'none';
+                    document.getElementById('plan-comparison-step').style.display = 'block';
+                }
+            }, 300);
+        }
+
+        function openQuestionModal(question) {
+            const modal = document.getElementById('question-modal');
+            const modalBody = document.getElementById('modal-body');
+            const aiButton = document.getElementById('get-ai-explanation');
+
+            document.getElementById('ai-content').innerHTML = '<p class="text-slate-500">Clique no botão para obter a explicação.</p>';
+            document.getElementById('answer-feedback').classList.add('hidden');
+            
+            modalBody.innerHTML = `
+                <p class="text-sm text-slate-500 font-semibold">${question.exam} - ${question.subject}</p>
+                <p class="mt-2">${question.statement}</p>
+                <div id="options-container" class="mt-4 space-y-2">
+                    ${question.options.map(opt => `<div class="option-card p-3 border rounded-lg cursor-pointer hover:border-[#37A5E0]" data-option-value="${opt}">${opt}</div>`).join('')}
+                </div>`;
+            
+            aiButton.onclick = () => getAIExplanation(question);
+            aiButton.disabled = false;
+            aiButton.textContent = 'Pedir explicação da IA';
+            aiButton.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-slate-300');
+            aiButton.classList.add('bg-[#FCD440]', 'hover:opacity-90');
+                
+            if (!isPremiumUser) {
+                aiButton.disabled = true;
+                aiButton.textContent = 'Recurso Premium';
+                aiButton.classList.add('opacity-50', 'cursor-not-allowed', 'bg-slate-300');
+                aiButton.classList.remove('bg-[#FCD440]', 'hover:opacity-90');
+                aiButton.onclick = () => {
+                     closeModal(document.getElementById('question-modal'));
+                     openModal(document.getElementById('premium-modal'));
+                };
+            }
+                
+            document.getElementById('options-container').onclick = (e) => {
+                if (e.target.classList.contains('option-card')) {
+                    checkAnswer(e.target, question.answer, e.currentTarget);
+                }
+            };
+            openModal(modal);
+        }
+
+        function checkAnswer(selectedOption, correctAnswer, container) {
+            const feedbackBox = document.getElementById('answer-feedback');
+            const isCorrect = selectedOption.dataset.optionValue === correctAnswer;
+            feedbackBox.className = 'mt-4 p-3 rounded-lg text-center font-semibold';
+            if (isCorrect) {
+                feedbackBox.textContent = 'Resposta Correta!';
+                feedbackBox.classList.add('bg-green-100', 'text-green-800');
+            } else {
+                feedbackBox.textContent = `Incorreto. A resposta certa é: ${correctAnswer}`;
+                feedbackBox.classList.add('bg-red-100', 'text-red-800');
+            }
+            container.querySelectorAll('.option-card').forEach(option => {
+                option.classList.remove('cursor-pointer', 'hover:border-[#37A5E0]');
+                if(option.dataset.optionValue === correctAnswer) option.classList.add('bg-green-100', 'border-green-400');
+                if(option === selectedOption && !isCorrect) option.classList.add('bg-red-100', 'border-red-400');
+            });
+            container.style.pointerEvents = 'none';
+        }
+        
+        async function getAIExplanation(question) {
+            const aiContent = document.getElementById('ai-content');
+
+            aiContent.innerHTML = `<div class="flex items-center justify-center"><svg class="animate-spin h-5 w-5 mr-3 text-[#37A5E0]" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>O EstudaGênio está analisando...</span></div>`;
+
+
+            const promptParaIA = `Aja como um tutor especialista. Explique esta questão:
+            
+            Enunciado: ${question.statement}
+            Opções: ${question.options.join(', ')}
+            Resposta Correta: ${question.answer}
+            
+            Explique por que a alternativa correta é a correta e comente brevemente as outras.`;
+
+            try {
+
+                const response = await fetch(CHATBOT_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: promptParaIA }) 
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Erro no servidor: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.reply) {
+                    const formattedText = result.reply.replace(/\n/g, '<br>');
+                    aiContent.innerHTML = `<p>${formattedText}</p>`;
+                } else {
+                    throw new Error("Resposta vazia do servidor.");
+                }
+
+            } catch (error) {
+                console.error("Erro na explicação:", error);
+                aiContent.innerHTML = '<p class="text-red-600">Ocorreu um erro ao buscar a explicação. Verifique se o servidor está rodando.</p>';
+            }
+        }
+        
+        function displayPremadeSimulados() {
+            const container = document.getElementById('premade-simulados-container');
+            container.innerHTML = mockPremadeSimulados.map(sim => `
+                <div class="bg-white p-5 rounded-xl shadow-md flex flex-col">
+                    <h3 class="font-bold text-lg">${sim.title}</h3>
+                    <p class="text-slate-500 text-sm mt-1 flex-grow">${sim.description}</p>
+                    <button class="start-premade-simulado-btn mt-4 w-full bg-[#37A5E0] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#2d8cc2]" data-simulado-id="${sim.id}">
+                        Iniciar Simulado
+                    </button>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.start-premade-simulado-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const simId = e.target.dataset.simuladoId;
+                    const simulado = mockPremadeSimulados.find(s => s.id === simId);
+                    startSimulado(simulado.settings);
+                });
+            });
+        }
+        
+        function startSimulado(settings = null) {
+            let config = {};
+            if (settings) {
+                config = settings;
+            } else {
+                config.subject = document.getElementById('custom-simulado-subject').value;
+                config.difficulty = document.getElementById('custom-simulado-difficulty').value;
+                config.quantity = parseInt(document.getElementById('custom-simulado-qnt').value) || 10;
+            }
+
+            const source = allQuestions.length ? allQuestions : mockQuestions;
+
+            let questionsForSimulado = source.filter(q => 
+                (!config.subject || config.subject === 'Todas' || 
+                    (Array.isArray(config.subject) ? config.subject.includes(q.subject) : config.subject === q.subject)
+                ) &&
+                (!config.difficulty || 
+                    (Array.isArray(config.difficulty) ? config.difficulty.includes(q.difficulty) : config.difficulty === q.difficulty)
+                ) &&
+                (!config.exam || config.exam === q.exam)
+            );
+
+
+
+            simuladoState.questions = questionsForSimulado.sort(() => 0.5 - Math.random()).slice(0, config.quantity);
+            
+            if (simuladoState.questions.length < config.quantity) {
+                alert("Não há questões suficientes para gerar o simulado com os filtros selecionados. Tente uma seleção mais ampla.");
+                return;
+            }
+            
+            simuladoState.currentQuestionIndex = 0;
+            simuladoState.userAnswers = {};
+            simuladoState.timeLimit = simuladoState.questions.length * 2 * 60;
+            simuladoState.timeElapsed = 0;
+            
+            showView('simulado-active');
+            displaySimuladoQuestion();
+            startTimer();
+        }
+
+        function displaySimuladoQuestion() {
+            const question = simuladoState.questions[simuladoState.currentQuestionIndex];
+            document.getElementById('simulado-question-counter').textContent = `Questão ${simuladoState.currentQuestionIndex + 1} de ${simuladoState.questions.length}`;
+            const area = document.getElementById('simulado-question-area');
+            area.innerHTML = `
+                <p class="text-sm text-slate-500 font-semibold">${question.exam} - ${question.subject}</p>
+                <p class="mt-2 text-lg">${question.statement}</p>
+                <div class="mt-6 space-y-3">
+                    ${question.options.map(opt => `
+                        <label class="simulado-option flex items-center p-4 border-2 rounded-lg cursor-pointer hover:border-[#37A5E0]">
+                            <input type="radio" name="simulado-option-${question.id}" value="${opt}" class="h-4 w-4 text-[#37A5E0] focus:ring-[#37A5E0] focus:ring-offset-0">
+                            <span class="ml-4 text-slate-700">${opt}</span>
+                        </label>
+                    `).join('')}
+                </div>`;
+            
+            const savedAnswer = simuladoState.userAnswers[question.id];
+            if (savedAnswer) {
+                const radio = area.querySelector(`input[value="${savedAnswer}"]`);
+                if(radio) {
+                    radio.checked = true;
+                    radio.closest('label').classList.add('selected');
+                }
+            }
+            
+            area.querySelectorAll('.simulado-option').forEach(label => {
+                label.addEventListener('click', () => {
+                    area.querySelectorAll('.simulado-option').forEach(l => l.classList.remove('selected'));
+                    label.classList.add('selected');
+                    const radio = label.querySelector('input');
+                    if(radio) simuladoState.userAnswers[question.id] = radio.value;
+                });
+            });
+            updateSimuladoNavButtons();
+        }
+        
+        function updateSimuladoNavButtons() {
+            const prevBtn = document.getElementById('simulado-prev-btn');
+            const nextBtn = document.getElementById('simulado-next-btn');
+            prevBtn.disabled = simuladoState.currentQuestionIndex === 0;
+            prevBtn.classList.toggle('opacity-50', prevBtn.disabled);
+            if (simuladoState.currentQuestionIndex === simuladoState.questions.length - 1) {
+                nextBtn.textContent = 'Finalizar Simulado';
+                nextBtn.className = 'bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg';
+            } else {
+                nextBtn.textContent = 'Próxima';
+                nextBtn.className = 'bg-[#37A5E0] hover:bg-[#2d8cc2] text-white font-semibold py-2 px-6 rounded-lg';
+            }
+        }
+        
+        function nextSimuladoQuestion() {
+            if (simuladoState.currentQuestionIndex < simuladoState.questions.length - 1) {
+                simuladoState.currentQuestionIndex++;
+                displaySimuladoQuestion();
+            } else {
+                finishSimulado();
+            }
+        }
+
+        function prevSimuladoQuestion() {
+            if (simuladoState.currentQuestionIndex > 0) {
+                simuladoState.currentQuestionIndex--;
+                displaySimuladoQuestion();
+            }
+        }
+        
+        function startTimer() {
+            clearInterval(simuladoState.timerInterval);
+            const timerEl = document.getElementById('simulado-timer');
+            const totalDuration = simuladoState.timeLimit;
+            let timeRemaining = totalDuration;
+
+            simuladoState.timeElapsed = 0;
+
+            timerEl.textContent = formatTime(timeRemaining);
+            
+            simuladoState.timerInterval = setInterval(() => {
+                timeRemaining--;
+                simuladoState.timeElapsed++;
+                timerEl.textContent = formatTime(timeRemaining);
+                if (timeRemaining <= 0) {
+                    clearInterval(simuladoState.timerInterval);
+                    finishSimulado();
+                }
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = seconds % 60;
+            return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+        }
+
+        function finishSimulado() {
+            clearInterval(simuladoState.timerInterval);
+
+            let correctCount = 0;
+            let subjectStats = {}; 
+
+            simuladoState.questions.forEach(q => {
+                const qId = q.id || q._id;
+                const userAnswer = simuladoState.userAnswers[qId];
+                const isCorrect = userAnswer === q.answer;
+                
+                if (isCorrect) correctCount++;
+
+      
+                const subject = q.subject || 'Outros'; 
+                
+                if (!subjectStats[subject]) {
+                    subjectStats[subject] = { subject: subject, total: 0, correct: 0 };
+                }
+
+                subjectStats[subject].total++;
+                if (isCorrect) {
+                    subjectStats[subject].correct++;
+                }
+            });
+
+            const subjectsBreakdownArray = Object.values(subjectStats);
+
+            const total = simuladoState.questions.length;
+            const percentage = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+
+            document.getElementById('results-correct').textContent = correctCount;
+            document.getElementById('results-incorrect').textContent = total - correctCount;
+            document.getElementById('results-percentage').textContent = `${percentage}%`;
+            document.getElementById('results-time').textContent = formatTime(simuladoState.timeElapsed);
+            
+            const resultData = {
+                userId: currentUser?.id, 
+                title: 'Simulado Personalizado',
+                date: new Date().toLocaleDateString('pt-BR'),
+                score: `${correctCount}/${total}`, 
+                
+                totalQuestions: total,
+                correctCount: correctCount,
+                timeSpentSeconds: simuladoState.timeElapsed,
+                subjectsBreakdown: subjectsBreakdownArray
+            };
+
+
+            const localDisplayData = { ...resultData, score: `${correctCount}/${total} (${percentage}%)` };
+            if (typeof mockSimuladoHistory !== 'undefined') {
+                mockSimuladoHistory.unshift(localDisplayData);
+            }
+            if (typeof displaySimuladoHistory === 'function') {
+                displaySimuladoHistory();
+            }
+
+            saveSimuladoResultToBackend(resultData);
+
+            showView('simulado-results');
+        }
+
+        function setupChart(canvasId, isDetailed) {
+            const ctx = document.getElementById(canvasId)?.getContext('2d');
+            if (!ctx) return;
+
+            if (Chart.getChart(canvasId)) {
+                Chart.getChart(canvasId).destroy();
+            }
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Matemática', 'Física', 'Química', 'História', 'Português'],
+                    datasets: [{
+                        label: '% de Acerto', data: [75, 60, 85, 90, 78],
+                        backgroundColor: ['rgba(55, 165, 224, 0.6)', 'rgba(252, 212, 64, 0.6)', 'rgba(55, 165, 224, 0.6)', 'rgba(252, 212, 64, 0.6)', 'rgba(55, 165, 224, 0.6)'],
+                        borderColor: ['#37A5E0', '#FCD440', '#37A5E0', '#FCD440', '#37A5E0'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 100 } },
+                    plugins: { legend: { display: isDetailed } }
+                }
+            });
+        }
+        
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatbot-input');
+            const message = input.value.trim();
+            if (message === '') return;
+
+            const messagesContainer = document.getElementById('chat-messages');
+
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'flex items-start gap-3 justify-end';
+            userMessageDiv.innerHTML = `
+                <div>
+                    <p class="font-semibold text-slate-700 text-right">Você</p>
+                    <div class="bg-[#37A5E0] text-white p-3 rounded-lg mt-1 inline-block">
+                        <p>${message}</p>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-slate-300 flex items-center justify-center"><i data-lucide="user"></i></div>`;
+            messagesContainer.appendChild(userMessageDiv);
+            lucide.createIcons({ nodes: [userMessageDiv.querySelector('i')] });
+
+            input.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            const thinkingDiv = document.createElement('div');
+            thinkingDiv.className = 'flex items-start gap-3';
+            thinkingDiv.innerHTML = `
+                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-[#37A5E0] flex items-center justify-center text-white"><i data-lucide="bot"></i></div>
+                <div>
+                    <p class="font-semibold text-slate-700">EstudaGênio IA</p>
+                    <div class="bg-slate-100 p-3 rounded-lg mt-1">
+                        <p class="animate-pulse">Pensando...</p>
+                    </div>
+                </div>`;
+            messagesContainer.appendChild(thinkingDiv);
+            lucide.createIcons({ nodes: [thinkingDiv.querySelector('i')] });
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            try {
+                const response = await fetch(CHATBOT_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message }) 
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                const text = result.reply;
+
+                const thinkingBubble = thinkingDiv.querySelector('.animate-pulse');
+                if (text && thinkingBubble) {
+                    thinkingBubble.parentElement.innerHTML = `<p>${text.replace(/\n/g, '<br>')}</p>`;
+                } else {
+                    throw new Error("Resposta vazia do servidor.");
+                }
+            } catch (error) {
+                console.error("Erro na API do Chatbot:", error);
+                const thinkingBubble = thinkingDiv.querySelector('.animate-pulse');
+                if (thinkingBubble) {
+                    thinkingBubble.parentElement.innerHTML = `<p class="text-red-600">Desculpe, não consegui processar sua pergunta agora. Tente novamente.</p>`;
+                }
+            }
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        }
+    </script>
+</body>
+</html>
