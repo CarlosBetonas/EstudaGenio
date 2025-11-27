@@ -7,16 +7,22 @@ const User = require('./models/User');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const app = express();
-app.use(cors()); // Permite que o HTML converse com o servidor
+app.use(cors()); 
 app.use(express.json());
-const path = require('path'); // Importante para lidar com caminhos
+const path = require('path'); 
 
-// servir todos os arquivos (index.html, cadastro.html, dashboard.html, etc)
 app.use(express.static(__dirname));
 
-// rota principal -> abre o index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/cadastro', (req, res) => {
+  res.sendFile(path.join(__dirname, 'cadastro.html'));
+});
+
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
 // --- CONEXÃO COM MONGODB ATLAS ---
